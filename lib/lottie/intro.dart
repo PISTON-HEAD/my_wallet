@@ -11,19 +11,29 @@ class intros extends StatefulWidget {
 
 // ignore: camel_case_types
 class _introsState extends State<intros> {
+  var loader = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Column(
-        mainAxisAlignment:MainAxisAlignment.center,
-        children: [
-          Lottie.network("assets/wallet.json"),
-          const SizedBox(height: 50,),
-          signer(context, "Create Account",Colors.white, const Color.fromRGBO(141,52,242,1),const Color.fromRGBO(0,125,254,1),),
-          const SizedBox(height: 25,),
-          signer(context, "Login",Colors.white70,const Color.fromRGBO(32,34,68,1),const Color.fromRGBO(32,34,68,1)),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment:MainAxisAlignment.center,
+          children: [
+            Lottie.asset('assets/wallet.json',
+            onLoaded: (val){
+              setState(() {
+                loader = false;
+              });
+            }
+            ),
+            const SizedBox(height: 50,),
+            loader?const SizedBox():signer(context, "Create Account",Colors.white, const Color.fromRGBO(141,52,242,1),const Color.fromRGBO(0,125,254,1),),
+            const SizedBox(height: 25,),
+            loader?const SizedBox():signer(context, "Login",Colors.white70,const Color.fromRGBO(32,34,68,1),const Color.fromRGBO(32,34,68,1)),
+          ],
+        ),
       ),
     );
   }
