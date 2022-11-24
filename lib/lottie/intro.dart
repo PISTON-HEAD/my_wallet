@@ -14,7 +14,7 @@ class _introsState extends State<intros> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromRGBO(23,23,49,1.0),
+      backgroundColor: Colors.black,
       body: Column(
         mainAxisAlignment:MainAxisAlignment.center,
         children: [
