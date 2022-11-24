@@ -18,7 +18,7 @@ class _introsState extends State<intros> {
       body: Column(
         mainAxisAlignment:MainAxisAlignment.center,
         children: [
-          Lottie.network("https://assets2.lottiefiles.com/packages/lf20_O1b0iWuPju.json"),
+          Lottie.network("assets/wallet.json"),
           const SizedBox(height: 50,),
           signer(context, "Create Account",Colors.white, const Color.fromRGBO(141,52,242,1),const Color.fromRGBO(0,125,254,1),),
           const SizedBox(height: 25,),
