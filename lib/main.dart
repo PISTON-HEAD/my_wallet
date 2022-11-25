@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'My Personalized Wallet',
+      title: 'Your personalized Wallet',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
 
