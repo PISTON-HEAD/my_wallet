@@ -80,7 +80,7 @@ class _introsState extends State<intros> {
             child: Center(
                 child: Text(
               name,
-              style: TextStyle(color: color, fontSize: 18),
+              style: TextStyle(color: color, fontSize: 18,fontWeight: FontWeight.w600),
             ))),
       ),
     );
