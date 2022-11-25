@@ -44,38 +44,41 @@ class _signingInState extends State<signingIn> {
                 borderRadius: BorderRadius.circular(10),
                   color: const Color.fromRGBO(51,54,67,1),
               ),
-              child: TextFormField(
-                decoration:  InputDecoration(
-                  contentPadding:const EdgeInsets.symmetric(horizontal: 10),
-                  hintText: "email",
-                  labelText: "email",
-                  hintStyle: fieldStyle(true),
-                  labelStyle: fieldStyle(false),
-                  enabledBorder:const UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.transparent),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide:BorderSide(color: Colors.transparent,
-                      width: 3.5,
+              child: Padding(
+                padding: const EdgeInsets.all(2),
+                child: TextFormField(
+                  decoration:  InputDecoration(
+                    contentPadding:const EdgeInsets.symmetric(horizontal: 10),
+                    hintText: "Email",
+                    labelText: "Email",
+                    hintStyle: fieldStyle(true),
+                    labelStyle: fieldStyle(false),
+                    enabledBorder:const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent),
+                    ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide:BorderSide(color: Colors.transparent,
+                        width: 3.5,
+                      ),
                     ),
                   ),
-                ),
-                cursorColor: Colors.white70,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: emailController,
-                style: const TextStyle(color: Colors.white,),
-                validator: (value) {
-                  if (value!.contains(" ",0)) {
-                    return "Enter an email without space";
-                  } else if(RegExp(
-                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                      .hasMatch(value)) {
-                    return null;
-                  }else{
-                    return "Enter valid Email";
-                  }
-                },
+                  cursorColor: Colors.white70,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: emailController,
+                  style: const TextStyle(color: Colors.white,),
+                  validator: (value) {
+                    if (value!.contains(" ",0)) {
+                      return "Enter an email without space";
+                    } else if(RegExp(
+                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                        .hasMatch(value)) {
+                      return null;
+                    }else{
+                      return "Enter valid Email";
+                    }
+                  },
 
+                ),
               ),
             )
           ],
@@ -85,8 +88,8 @@ class _signingInState extends State<signingIn> {
   }
 
   TextStyle  fieldStyle(bool bold) {
-    Color t = Colors.white;
-    if(bold){t = Colors.white60;}
+    Color t = Colors.white70;
+    if(bold){t = Colors.white24;}
     return  TextStyle(
                   fontWeight: FontWeight.bold,
                   color: t,
