@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // ignore: camel_case_types
@@ -15,11 +16,81 @@ class _signingInState extends State<signingIn> {
   bool checker;
   _signingInState(this.checker);
 
+  final formKey = GlobalKey<FormState>();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+
+  bool seePassword = true;
+  IconData passwordVisibility = Icons.visibility_off;
+
+
+
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(child: Text(checker.toString(),style: const TextStyle(color:Colors.lightBlue),),),
+      backgroundColor: const Color.fromRGBO(22,23,48,1),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 45.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children:  [
+            const Text("Welcome Back!",style: TextStyle(color: Colors.white,fontSize: 40,fontWeight: FontWeight.bold),),
+            const Text("Please login to your account.",style: TextStyle(color: Color.fromRGBO(143,142,154,1),fontSize: 20,fontWeight: FontWeight.bold),),
+            const SizedBox(height: 20,),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                  color: const Color.fromRGBO(51,54,67,1),
+              ),
+              child: TextFormField(
+                decoration:  InputDecoration(
+                  contentPadding:const EdgeInsets.symmetric(horizontal: 10),
+                  hintText: "email",
+                  labelText: "email",
+                  hintStyle: fieldStyle(true),
+                  labelStyle: fieldStyle(false),
+                  enabledBorder:const UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.transparent),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide:BorderSide(color: Colors.transparent,
+                      width: 3.5,
+                    ),
+                  ),
+                ),
+                cursorColor: Colors.white70,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: emailController,
+                style: const TextStyle(color: Colors.white,),
+                validator: (value) {
+                  if (value!.contains(" ",0)) {
+                    return "Enter an email without space";
+                  } else if(RegExp(
+                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                      .hasMatch(value)) {
+                    return null;
+                  }else{
+                    return "Enter valid Email";
+                  }
+                },
+
+              ),
+            )
+          ],
+        ),
+      )
     );
+  }
+
+  TextStyle  fieldStyle(bool bold) {
+    Color t = Colors.white;
+    if(bold){t = Colors.white60;}
+    return  TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: t,
+                  fontSize: 14,
+                );
   }
 }
