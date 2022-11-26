@@ -66,6 +66,24 @@ class _signingInState extends State<signingIn> {
               ),
             ),
             const SizedBox(height: 15,),
+            checker?Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: const Color.fromRGBO(51,54,67,1),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: TextFormField(
+                  obscureText: seePassword,
+                  decoration:buildInputDecoration("Username", Icons.account_box),
+                  cursorColor: Colors.white70,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: passwordController,
+                  style: const TextStyle(color: Colors.white,),
+                ),
+              ),
+            ):const SizedBox(),
+            checker?const SizedBox(height: 15,):const SizedBox(),
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -83,7 +101,8 @@ class _signingInState extends State<signingIn> {
                 ),
               ),
             ),
-            Row(
+
+            checker?const SizedBox(height: 25,):Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(onPressed: (){},
@@ -99,26 +118,14 @@ class _signingInState extends State<signingIn> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.width / 7.5,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
+                  borderRadius: BorderRadius.circular(12),
                   gradient: const LinearGradient(
                     colors: [Color.fromRGBO(141, 52, 242, 1),
                       Color.fromRGBO(0, 125, 254, 1),],
                   )),
               child: MaterialButton(
                 onPressed: (){},
-                child: const Text("LOGIN",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 20),),
-              ),
-            ),
-            const SizedBox(height: 15,),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.width / 7.5,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                color: Colors.white12,),
-              child: MaterialButton(
-                onPressed: (){},
-                child: const Text("REGISTER NOW",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white70,fontSize: 20),),
+                child:  Text(checker?"REGISTER NOW":"LOGIN",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 20),),
               ),
             ),
           ],
