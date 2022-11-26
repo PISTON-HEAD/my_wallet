@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_wallet/LogScreen/signing.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: camel_case_types
 class intros extends StatefulWidget {
@@ -69,7 +70,7 @@ class _introsState extends State<intros> {
               colors: [grad1, grad2],
             )),
         child: MaterialButton(
-            onPressed: () {
+            onPressed: () async {
               if (name.compareTo("Create Account") == 0) {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const signingIn(checker: true)));
               } else {

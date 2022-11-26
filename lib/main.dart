@@ -2,11 +2,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_wallet/lottie/intro.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void>  main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  SharedPreferences sharedPreferences =await SharedPreferences.getInstance();
+  String? id = sharedPreferences.getString("id");
+  print(id);
   runApp(const MyApp());
 }
 

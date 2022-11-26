@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_wallet/fire_auth/authenticator.dart';
+import 'package:my_wallet/mainScreen/homePage.dart';
 
 // ignore: camel_case_types
 class signingIn extends StatefulWidget {
@@ -40,7 +41,8 @@ class _signingInState extends State<signingIn> {
                     setState(() {
                       error = false;
                     }),
-                    print("User Created Without Interruption.")
+                    print("User Created Without Interruption."),
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>const homeScreen())),
                   }
                 else
                   {
@@ -78,7 +80,8 @@ class _signingInState extends State<signingIn> {
                   print("User Logged In ");
                 });
                 //next Screen
-              }
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>const homeScreen()));
+        }
             else
               {
                 setState(() {
