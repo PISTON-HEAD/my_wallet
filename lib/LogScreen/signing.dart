@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_wallet/fire_auth/authenticator.dart';
 
@@ -36,6 +37,9 @@ class _signingInState extends State<signingIn> {
                 if (value == null)
                   {
                     //Go to next Screen
+                    setState(() {
+                      error = false;
+                    }),
                     print("User Created Without Interruption.")
                   }
                 else
@@ -55,6 +59,43 @@ class _signingInState extends State<signingIn> {
     }
   }
 
+  FirebaseAuth auth = FirebaseAuth.instance;
+  logInUser()  {
+    if (formKey.currentState!.validate()) {
+      logIn(emailController.text, passwordController.text).then((value) {
+
+            if (value == null)
+              {
+                setState(() {
+                  error = false;
+                  FirebaseFirestore.instance
+                      .collection("User Data")
+                      .doc(auth.currentUser!.uid)
+                      .update({
+                    "Password": passwordController.text,
+                    "Last SignedIn": DateTime.now().toString().substring(0,16),
+                  });
+                  print("User Logged In ");
+                });
+                //next Screen
+              }
+            else
+              {
+                setState(() {
+                  error = true;
+                  int i;
+                  for (i = 1; i < value.toString().length; i++) {
+                    if (value.toString()[i] == "]") {
+                      break;
+                    }
+                  }
+                  errorMsg = value.toString().substring(i + 2);
+                });
+              }
+          });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,16 +108,20 @@ class _signingInState extends State<signingIn> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  "Welcome Back!",
-                  style: TextStyle(
+                 Text(
+                 checker?"Welcome,": "Welcome Back!",
+                  style: const TextStyle(
                       color: Colors.white,
                       fontSize: 40,
                       fontWeight: FontWeight.bold),
                 ),
-                const Text(
-                  "Please login to your account.",
-                  style: TextStyle(
+                error? Text(errorMsg,style: const TextStyle(
+                    color: Colors.tealAccent,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+                ) :  Text(
+                  checker?"Please sign in here.":"Please login to your account.",
+                  style: const TextStyle(
                       color: Color.fromRGBO(143, 142, 154, 1),
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
@@ -164,8 +209,8 @@ class _signingInState extends State<signingIn> {
                         } else {
                           for (int i = 0; i < value.length; i++) {
                             if (val.codeUnitAt(i) >= 97 &&
-                                val.codeUnitAt(i) <= 122) {}
-                            else {
+                                val.codeUnitAt(i) <= 122) {
+                            } else {
                               charCounter++;
                             }
                           }
@@ -221,10 +266,10 @@ class _signingInState extends State<signingIn> {
                       )),
                   child: MaterialButton(
                     onPressed: () {
-
-                      if (checker && flag == 0) {
-                        flag = 1;
+                      if (checker) {
                         signUpUser();
+                      }else {
+                        logInUser();
                       }
                     },
                     child: Text(

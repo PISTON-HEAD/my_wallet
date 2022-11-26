@@ -39,3 +39,25 @@ Future signUp(String email, String password, String username) async {
 
   }
 }
+Future logIn(String email, String password,)async{
+  try{
+    SharedPreferences sharedPreferences =await SharedPreferences.getInstance();
+    UserCredential credential = await auth.signInWithEmailAndPassword(email: email, password: password);
+    final fireUser = credential.user;
+    final logger = (await FirebaseFirestore.instance.collection("User Data").where("id",isEqualTo: fireUser!.uid).get()).docs;
+    if(logger.isNotEmpty){
+      print("Old User Signing...");
+      sharedPreferences.setString("id",logger[0]["id"]);
+      sharedPreferences.setString("Name",logger[0]["Name"]);
+      sharedPreferences.setString("Email",logger[0]["Email"]);
+      sharedPreferences.setString("Password",logger[0]["Password"]);
+      sharedPreferences.setString("LoggedIn", "true");
+    }
+  }catch(e){
+    if(e.toString() == "[firebase_auth/wrong-password] The password is invalid or the user does not have a password." || e.toString() == "[firebase_auth/user-not-found] There is no user record corresponding to this identifier. The user may have been deleted."){
+    return e.toString();
+    }else{
+      return null;
+    }
+  }
+}
