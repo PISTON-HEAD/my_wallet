@@ -169,7 +169,7 @@ class _homeScreenState extends State<homeScreen> {
   }
 
   TextStyle get buildTextStyle =>
-      TextStyle(fontSize: 18, fontWeight: FontWeight.w400);
+      const TextStyle(fontSize: 18, fontWeight: FontWeight.w400);
 
   void _handleMenuButtonPressed() {
     _advancedDrawerController.showDrawer();
