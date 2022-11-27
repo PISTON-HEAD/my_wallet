@@ -21,12 +21,14 @@ Future signUp(String email, String password, String username) async {
         "Created Time":DateTime.now().toString().substring(0,16),
         "Last SignedIn":DateTime.now().toString().toString().substring(0,16),
         "id":fireUser.uid,
+        "Logged In":true,
       });
       sharedPreferences.setString("id",fireUser.uid);
       sharedPreferences.setString("Name",username);
       sharedPreferences.setString("Email",email);
       sharedPreferences.setString("Password",password);
       sharedPreferences.setString("LoggedIn", "true");
+      print(sharedPreferences.getString("LoggedIn"));
     }
 
   }catch(error){

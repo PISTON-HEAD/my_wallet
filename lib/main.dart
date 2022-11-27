@@ -1,7 +1,10 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_wallet/lottie/intro.dart';
+import 'package:my_wallet/mainScreen/homePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void>  main() async {
@@ -9,13 +12,14 @@ Future<void>  main() async {
   await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   SharedPreferences sharedPreferences =await SharedPreferences.getInstance();
-  String? id = sharedPreferences.getString("id");
-  print(id);
-  runApp(const MyApp());
+  String? logger = "null";
+  logger = sharedPreferences.getString("LoggedIn");
+  runApp(MyApp(logger: logger,));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String? logger;
+  const MyApp({super.key, required this.logger});
 
   // This widget is the root of your application.
   @override
@@ -27,7 +31,7 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.blueGrey,
       ),
-      home: const intros(),
+      home:logger == null || logger=="false"? const intros():const homeScreen(),
     );
   }
 }
