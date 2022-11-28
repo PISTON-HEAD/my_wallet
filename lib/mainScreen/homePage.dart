@@ -47,8 +47,10 @@ class _homeScreenState extends State<homeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var foreColor= const Color.fromRGBO(18, 32, 103, 1);
     return AdvancedDrawer(
-      backdropColor: const Color.fromRGBO(15, 30, 84, 1),
+      backdropColor: const Color(0xFF0F102C),
+      //const Color.fromRGBO(15, 30, 84, 1),
       controller: _advancedDrawerController,
       animationDuration: const Duration(milliseconds: 350),
       animateChildDecoration: true,
@@ -144,9 +146,9 @@ class _homeScreenState extends State<homeScreen> {
         ),
       ),
       child: Scaffold(
-        backgroundColor: const Color.fromRGBO(50, 80, 165, 1),
+        backgroundColor: foreColor,
         appBar: AppBar(
-          backgroundColor: const Color.fromRGBO(50, 80, 165, 1),
+          backgroundColor:foreColor,
           elevation: 0,
           leading: IconButton(
             onPressed: _handleMenuButtonPressed,
