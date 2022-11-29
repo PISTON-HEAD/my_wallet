@@ -18,6 +18,7 @@ class homeScreen extends StatefulWidget {
   const homeScreen({Key? key, required this.userName}) : super(key: key);
 
   @override
+  // ignore: no_logic_in_create_state
   State<homeScreen> createState() => _homeScreenState(userName);
 }
 
@@ -52,7 +53,7 @@ class _homeScreenState extends State<homeScreen> {
         .whenComplete(() => {setState(() {})});
   }
 
-  var foreColor = Color(0xFF2F394E);
+  var foreColor =  const Color(0xFF2F394E);
   //const Color(0xFF394F89);
   //const Color.fromRGBO(53, 80, 161, 1);
   //const Color.fromRGBO(18, 32, 103, 1);
@@ -237,7 +238,6 @@ class _homeScreenState extends State<homeScreen> {
                             shouldShowBorder: true,
                             checkedIconColor: Colors.white,
                             splashColor: Colors.transparent,
-                            //activeColor: index % 2 == 0 ? floatColor() : foreColor,
                             borderColor: index % 2 == 0
                                 ? floatColor()
                                 : snapshot.data?.data()?["Checker"][index] != true
@@ -247,6 +247,7 @@ class _homeScreenState extends State<homeScreen> {
                             //shape: const CircleBorder(),
                             value: snapshot.data?.data()?["Checker"][index],
                             onChanged: (bool? value) {
+                              // ignore: prefer_typing_uninitialized_variables
                               var checker;
                               FirebaseFirestore.instance.collection("User Tasks")
                                   .doc("${auth.currentUser!.displayName}||${auth.currentUser!.uid}").collection("Category").doc("Welcome").get().then((value) =>
