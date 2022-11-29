@@ -42,7 +42,7 @@ class _signingInState extends State<signingIn> {
                       error = false;
                     }),
                     print("User Created Without Interruption."),
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>const homeScreen())),
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homeScreen(userName: nameController.text,))),
                   }
                 else
                   {
@@ -80,7 +80,7 @@ class _signingInState extends State<signingIn> {
                   print("User Logged In ");
                 });
                 //next Screen
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>const homeScreen()));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homeScreen(userName:auth.currentUser!.displayName.toString())));
         }
             else
               {

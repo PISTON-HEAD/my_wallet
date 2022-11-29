@@ -13,13 +13,15 @@ Future<void>  main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   SharedPreferences sharedPreferences =await SharedPreferences.getInstance();
   String? logger = "null";
+  String? userName = "null";
+  userName = sharedPreferences.getString("Name");
   logger = sharedPreferences.getString("LoggedIn");
-  runApp(MyApp(logger: logger,));
+  runApp(MyApp(logger: logger,userName: userName,));
 }
 
 class MyApp extends StatelessWidget {
-  final String? logger;
-  const MyApp({super.key, required this.logger});
+  final String? logger,userName;
+  const MyApp({super.key, required this.logger, this.userName});
 
   // This widget is the root of your application.
   @override
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.blueGrey,
       ),
-      home:logger == null || logger=="false"? const intros():const homeScreen(),
+      home:logger == null || logger=="false"? const intros(): homeScreen(userName: userName.toString(),),
     );
   }
 }
