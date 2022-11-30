@@ -30,20 +30,7 @@ Future signUp(String email, String password, String username) async {
         "Last SignedIn": DateTime.now().toString().toString().substring(0, 16),
         "id": fireUser.uid,
         "Logged In": true,
-      }).whenComplete(() => {
-                fireUser.updateDisplayName(username).whenComplete(() => {
-                      FirebaseFirestore.instance
-                          .collection("User Tasks")
-                          .doc("$username||${fireUser.uid}").collection("Category").doc("Welcome")
-                          .set({
-                        "Task List": ["Create Your First Task"],
-                        "Checker": [false],
-                        "Time Stamp": [DateTime.now().toString()],
-                        "Count": 1,
-                        "Category":"Welcome",
-                      }),
-                    }),
-              });
+      });
       sharedPreferences.setString("id", fireUser.uid);
       sharedPreferences.setString("Name", username);
       sharedPreferences.setString("Email", email);

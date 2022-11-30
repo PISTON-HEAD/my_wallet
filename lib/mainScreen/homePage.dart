@@ -13,7 +13,9 @@ import 'package:transition/transition.dart';
 
 class homeScreen extends StatefulWidget {
   final String userName;
-  const homeScreen({Key? key, required this.userName}) : super(key: key);
+  const homeScreen({Key? key, required this.userName})
+      : super(key: key) // ignore: no_logic_in_create_state
+  ;
 
   @override
   State<homeScreen> createState() => _homeScreenState(userName);
@@ -30,38 +32,48 @@ class _homeScreenState extends State<homeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print("Owner: $userName");
   }
 
+  var fileLoader = false;
   fileChoser() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     var myImage = File(pickedFile!.path);
     Reference ref = FirebaseStorage.instance
         .ref()
         .child("${auth.currentUser!.displayName}/${auth.currentUser!.uid}")
         .child("Profile Picture");
-    var upload = ref.putFile(myImage);
-    var imageUrl = await FirebaseStorage.instance
-        .ref()
-        .child("${auth.currentUser!.displayName}/${auth.currentUser!.uid}")
-        .child("Profile Picture").getDownloadURL();
-    auth.currentUser!.updatePhotoURL(imageUrl).whenComplete(() => {
-    setState(() {
-    })
-    });
-
+    String imageUrl;
+    ref.putFile(myImage).whenComplete(() async => {
+          imageUrl = await FirebaseStorage.instance
+              .ref()
+              .child(
+                  "${auth.currentUser!.displayName}/${auth.currentUser!.uid}")
+              .child("Profile Picture")
+              .getDownloadURL(),
+          auth.currentUser!.updatePhotoURL(imageUrl).whenComplete(() => {
+                setState(() {
+                  fileLoader = false;
+                }),
+              })
+        });
   }
-  var foreColor =  const Color(0xFF2F394E);
+
+  var drawerTextColor = Colors.white60;
+
+  var foreColor = const Color(0xFF2F394E);
   //const Color(0xFF394F89);
   //const Color.fromRGBO(53, 80, 161, 1);
   //const Color.fromRGBO(18, 32, 103, 1);
   var isChecked = false;
 
+  int categoryCounter = 0;
+
   @override
   Widget build(BuildContext context) {
-    var foreColor= const Color.fromRGBO(18, 32, 103, 1);
     return AdvancedDrawer(
       backdropColor: drawerColor(),
-      //const Color.fromRGBO(15, 30, 84, 1),
       controller: _advancedDrawerController,
       animationDuration: const Duration(milliseconds: 350),
       animateChildDecoration: true,
@@ -73,51 +85,71 @@ class _homeScreenState extends State<homeScreen> {
       ),
       drawer: SafeArea(
         child: ListTileTheme(
-          textColor: Colors.white60,
+          textColor: drawerTextColor,
           iconColor: drawerIconColor(),
           selectedTileColor: Colors.grey,
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Container(
-                  width: 130.0,
-                  height: 130.0,
-                  margin: const EdgeInsets.only(
-                    top: 24.0,
-                    bottom: 44.0,
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  decoration: const BoxDecoration(
-                    color: Colors.black26,
-                    shape: BoxShape.circle,
-                  ),
-                  child: auth.currentUser!.photoURL != null
-                      ? GestureDetector(
-                        onLongPress: (){
-                          fileChoser();
-                          setState(() {
-
-                          });
-                        },
-                        child: Image.network(
-                            "${auth.currentUser!.photoURL}",
-                            fit: BoxFit.cover,
-                          ),
-                      )
-                      : GestureDetector(
-                          onTap: () async {
-                            fileChoser();
-                            setState(() {
-
-                            });
-                          },
-                          child: Image.asset(
-                          "assets/default.png",
-                          fit: BoxFit.cover,
-                        ))),
+              Stack(fit: StackFit.passthrough, children: [
+                fileLoader
+                    ? Positioned(
+                        child: Container(
+                        margin: const EdgeInsets.only(
+                          top: 24.0,
+                          bottom: 44.0,
+                        ),
+                        height: 145,
+                        width: 145,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child:
+                            const CircularProgressIndicator(color: Colors.grey),
+                      ))
+                    : Container(
+                        width: 140.0,
+                        height: 140.0,
+                        margin: const EdgeInsets.only(
+                          top: 24.0,
+                          bottom: 30.0,
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        decoration: const BoxDecoration(
+                          color: Colors.black26,
+                          shape: BoxShape.circle,
+                        ),
+                        child: auth.currentUser!.photoURL != null
+                            ? GestureDetector(
+                                onLongPress: () {
+                                  setState(() {
+                                    fileLoader = true;
+                                  });
+                                  fileChoser();
+                                },
+                                child: Image.network(
+                                  "${auth.currentUser!.photoURL}",
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : GestureDetector(
+                                onLongPress: () async {
+                                  setState(() {
+                                    fileLoader = true;
+                                  });
+                                  fileChoser().printInfo;
+                                  setState(() {
+                                    fileLoader = false;
+                                  });
+                                },
+                                child: Image.asset(
+                                  "assets/default.png",
+                                  fit: BoxFit.cover,
+                                ))),
+              ]),
               Text(
-                "${auth.currentUser!.displayName}",
+                userName,
                 style: const TextStyle(
                     color: Colors.white,
                     fontSize: 28,
@@ -159,7 +191,7 @@ class _homeScreenState extends State<homeScreen> {
       child: Scaffold(
         backgroundColor: foreColor,
         appBar: AppBar(
-          backgroundColor:foreColor,
+          backgroundColor: foreColor,
           elevation: 0,
           leading: IconButton(
             onPressed: _handleMenuButtonPressed,
@@ -177,7 +209,102 @@ class _homeScreenState extends State<homeScreen> {
             ),
           ),
         ),
-        body: Container(),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "What's up, $userName!",
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 42,
+                      fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(
+                  height: 45,
+                ),
+                Text(
+                  "CATEGORIES",
+                  style: TextStyle(
+                      color: drawerTextColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.7),
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      FloatingActionButton(
+                        onPressed: () {setState(() {
+                          categoryCounter++;
+                        });},
+                        elevation: 10,
+                        backgroundColor: drawerColor(),
+                        tooltip: "CREATE CATEGORIES",
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)),
+                        child: const Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 8),
+                            child: Icon(
+                              Icons.add,
+                              size: 35,
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      SizedBox(
+                        height: 120,
+                        width: MediaQuery.of(context).size.width,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            physics: const ClampingScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: categoryCounter,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                margin:const EdgeInsets.symmetric(horizontal: 5),
+                                padding:const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 15),
+                                decoration: BoxDecoration(
+                                    color: drawerColor(),
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+
+                                  children: [
+                                    Text(
+                                      "$index Tasks",
+                                      style: categoryStyle(Colors.white54,FontWeight.bold,18),
+                                    ),
+                                    const SizedBox(height: 5,),
+                                    Text(
+                                      "Business          ",
+                                      style: categoryStyle(Colors.white,FontWeight.bold,20),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
         floatingActionButton: FloatingActionButton(
           backgroundColor: floatColor(),
           splashColor: Colors.white70,
@@ -200,6 +327,16 @@ class _homeScreenState extends State<homeScreen> {
       ),
     );
   }
+
+  TextStyle categoryStyle(Color txtColor,FontWeight txtWeight,int txtSize) {
+    return  TextStyle(
+                                      color: txtColor,
+                                      fontWeight: txtWeight,
+                                      letterSpacing: 0.7,
+                                        fontSize: txtSize.toDouble(),
+                                    );
+  }
+
   Color drawerIconColor() => const Color.fromRGBO(72, 91, 145, 3);
 
   Color drawerColor() => const Color.fromRGBO(20, 30, 54, 1);
@@ -215,3 +352,27 @@ class _homeScreenState extends State<homeScreen> {
     _advancedDrawerController.showDrawer();
   }
 }
+/*
+ Wrap(
+                      spacing: 10,
+                      direction: Axis.horizontal,
+                      children:List.generate(3, (index) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            color: drawerColor(),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child:  Card(
+                            color: Colors.transparent,
+                            elevation: 10,
+                            child: Column(
+                              children: [
+                                Text("data  dhfdshf iefesh fdsnf hdsufu"),
+                                Text("Data")
+                              ],
+                            ),
+                          )
+                        );
+                      }),
+                    ),
+ */

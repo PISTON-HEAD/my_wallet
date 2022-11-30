@@ -42,6 +42,7 @@ class _signingInState extends State<signingIn> {
                       error = false;
                     }),
                     print("User Created Without Interruption."),
+                    print(nameController.text),
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homeScreen(userName: nameController.text.toString(),))),
                   }
                 else
