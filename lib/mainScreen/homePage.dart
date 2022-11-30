@@ -32,7 +32,6 @@ class _homeScreenState extends State<homeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("Owner: $userName");
   }
 
   var fileLoader = false;
