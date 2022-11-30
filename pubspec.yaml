@@ -45,6 +45,10 @@ dependencies:
   flutter_advanced_drawer: ^1.3.2
   image_picker: ^0.8.6
   firebase_storage: ^11.0.6
+  transition: ^2.0.2
+  custom_check_box: ^0.0.4
+  advanced_search: ^2.2.3
+  get: ^4.6.5
 
 
 dev_dependencies:

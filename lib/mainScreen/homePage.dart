@@ -7,18 +7,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:my_wallet/mainScreen/taskCreate.dart';
+import 'package:transition/transition.dart';
 // ignore: camel_case_types
 
 class homeScreen extends StatefulWidget {
-  const homeScreen({Key? key}) : super(key: key);
+  final String userName;
+  const homeScreen({Key? key, required this.userName}) : super(key: key);
 
   @override
-  State<homeScreen> createState() => _homeScreenState();
+  State<homeScreen> createState() => _homeScreenState(userName);
 }
 
 class _homeScreenState extends State<homeScreen> {
   final _advancedDrawerController = AdvancedDrawerController();
   FirebaseAuth auth = FirebaseAuth.instance;
+
+  String userName;
+  _homeScreenState(this.userName);
 
   @override
   void initState() {
@@ -44,12 +50,17 @@ class _homeScreenState extends State<homeScreen> {
     });
 
   }
+  var foreColor =  const Color(0xFF2F394E);
+  //const Color(0xFF394F89);
+  //const Color.fromRGBO(53, 80, 161, 1);
+  //const Color.fromRGBO(18, 32, 103, 1);
+  var isChecked = false;
 
   @override
   Widget build(BuildContext context) {
     var foreColor= const Color.fromRGBO(18, 32, 103, 1);
     return AdvancedDrawer(
-      backdropColor: const Color(0xFF0F102C),
+      backdropColor: drawerColor(),
       //const Color.fromRGBO(15, 30, 84, 1),
       controller: _advancedDrawerController,
       animationDuration: const Duration(milliseconds: 350),
@@ -63,7 +74,7 @@ class _homeScreenState extends State<homeScreen> {
       drawer: SafeArea(
         child: ListTileTheme(
           textColor: Colors.white60,
-          iconColor: const Color.fromRGBO(72, 91, 145, 3),
+          iconColor: drawerIconColor(),
           selectedTileColor: Colors.grey,
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           child: Column(
@@ -166,10 +177,37 @@ class _homeScreenState extends State<homeScreen> {
             ),
           ),
         ),
+        body: Container(),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: floatColor(),
+          splashColor: Colors.white70,
+          elevation: 25,
+          highlightElevation: 20,
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 35,
+          ),
+          onPressed: () {
+            Navigator.push(
+                context,
+                Transition(
+                  child: const taskCreation(),
+                  transitionEffect: TransitionEffect.FADE,
+                ));
+          },
+        ),
       ),
     );
   }
+  Color drawerIconColor() => const Color.fromRGBO(72, 91, 145, 3);
 
+  Color drawerColor() => const Color.fromRGBO(20, 30, 54, 1);
+  //const Color.fromRGBO(24, 20, 77, 1);
+  //const Color.fromRGBO(4, 25, 87, 1);
+  //const Color(0xFF0F102C);
+
+  Color floatColor() => Colors.purpleAccent;
   TextStyle get buildTextStyle =>
       const TextStyle(fontSize: 18, fontWeight: FontWeight.w400);
 
