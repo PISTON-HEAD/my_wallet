@@ -220,7 +220,7 @@ class _homeScreenState extends State<homeScreen> {
         ),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
+            padding: const EdgeInsets.only(left: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -245,39 +245,39 @@ class _homeScreenState extends State<homeScreen> {
                 const SizedBox(
                   height: 25,
                 ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      FloatingActionButton(
-                        onPressed: () {
-                          scrollUp();
-                          setState(() {
+                Row(
+
+                  children: [
+                    FloatingActionButton(
+                      onPressed: () {
+                        scrollUp();
+                        setState(() {
                           categoryCounter++;
                         });},
-                        elevation: 10,
-                        backgroundColor: drawerColor(),
-                        tooltip: "CREATE CATEGORIES",
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                        child: const Center(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 8),
-                            child: Icon(
-                              Icons.add,
-                              size: 35,
-                              color: Colors.white70,
-                            ),
+                      elevation: 10,
+                      backgroundColor: drawerColor(),
+                      tooltip: "CREATE CATEGORIES",
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0)),
+                      child: const Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 8),
+                          child: Icon(
+                            Icons.add,
+                            size: 35,
+                            color: Colors.white70,
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        width: 8,
-                      ),
-                      SizedBox(
-                        height: 120,
-                        width: MediaQuery.of(context).size.width,
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    SingleChildScrollView(
+                      child: SizedBox(
+                        height: 125,
+                        width: MediaQuery.of(context).size.width/1.48,
                         child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             physics: const ClampingScrollPhysics(),
@@ -310,10 +310,10 @@ class _homeScreenState extends State<homeScreen> {
                                 ),
                               );
                             }),
-                      )
-                    ],
-                  ),
-                )
+                      ),
+                    )
+                  ],
+                ),
               ],
             ),
           ),
