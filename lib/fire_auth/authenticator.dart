@@ -19,6 +19,7 @@ Future signUp(String email, String password, String username) async {
         .docs;
     if (logger.isEmpty) {
       print("New User -- Initializing Cloud Collection....");
+      auth.currentUser!.updateDisplayName(username);
       FirebaseFirestore.instance
           .collection("User Data")
           .doc("$username||${fireUser!.uid}")

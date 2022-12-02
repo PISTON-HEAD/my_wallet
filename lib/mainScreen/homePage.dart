@@ -4,10 +4,10 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:my_wallet/mainScreen/taskCreator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
-import 'package:my_wallet/mainScreen/taskCreate.dart';
 import 'package:transition/transition.dart';
 // ignore: camel_case_types
 
@@ -332,7 +332,7 @@ class _homeScreenState extends State<homeScreen> {
             Navigator.push(
                 context,
                 Transition(
-                  child: const taskCreation(),
+                  child:  const taskCreation(),
                   transitionEffect: TransitionEffect.FADE,
                 ));
           },
