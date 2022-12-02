@@ -24,6 +24,9 @@ class homeScreen extends StatefulWidget {
 class _homeScreenState extends State<homeScreen> {
   final _advancedDrawerController = AdvancedDrawerController();
   FirebaseAuth auth = FirebaseAuth.instance;
+  ScrollController sController = ScrollController();
+
+
 
   String userName;
   _homeScreenState(this.userName);
@@ -58,6 +61,13 @@ class _homeScreenState extends State<homeScreen> {
               })
         });
   }
+
+
+
+  void scrollUp(){
+    sController.animateTo(sController.position.minScrollExtent, duration: const Duration(milliseconds: 1700), curve: Curves.fastOutSlowIn,);
+  }
+
 
   var drawerTextColor = Colors.white60;
 
@@ -240,7 +250,9 @@ class _homeScreenState extends State<homeScreen> {
                   child: Row(
                     children: [
                       FloatingActionButton(
-                        onPressed: () {setState(() {
+                        onPressed: () {
+                          scrollUp();
+                          setState(() {
                           categoryCounter++;
                         });},
                         elevation: 10,
@@ -271,6 +283,8 @@ class _homeScreenState extends State<homeScreen> {
                             physics: const ClampingScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: categoryCounter,
+                            controller: sController,
+                            reverse: false,
                             itemBuilder: (context, index) {
                               return Container(
                                 margin:const EdgeInsets.symmetric(horizontal: 5),
@@ -284,7 +298,7 @@ class _homeScreenState extends State<homeScreen> {
 
                                   children: [
                                     Text(
-                                      "$index Tasks",
+                                      "${categoryCounter-index-1} Tasks",
                                       style: categoryStyle(Colors.white54,FontWeight.bold,18),
                                     ),
                                     const SizedBox(height: 5,),
