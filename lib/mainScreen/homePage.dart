@@ -1,5 +1,5 @@
 // ignore: duplicate_ignore
-// ignore_for_file: camel_case_types, duplicate_ignore, avoid_print
+// ignore_for_file: camel_case_types, duplicate_ignore, avoid_print, no_logic_in_create_state
 
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
