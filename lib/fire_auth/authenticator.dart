@@ -19,6 +19,7 @@ Future signUp(String email, String password, String username) async {
         .docs;
     if (logger.isEmpty) {
       print("New User -- Initializing Cloud Collection....");
+      var times = DateTime.now().toString().substring(0,19);
       auth.currentUser!.updateDisplayName(username);
       FirebaseFirestore.instance
           .collection("User Data")
@@ -31,6 +32,18 @@ Future signUp(String email, String password, String username) async {
         "Last SignedIn": DateTime.now().toString().toString().substring(0, 16),
         "id": fireUser.uid,
         "Logged In": true,
+      }).whenComplete(() => {
+
+      FirebaseFirestore.instance.collection("User Tasks").doc("$username||${fireUser.uid}").collection("Categories").doc(times).set(
+          {
+            "Category":"Welcome",
+            "Created Time":times,
+            "Tasks":["Create Your first Task"],
+            "Checker":[false],
+            "Count":1,
+            "id":times,
+          }),
+
       });
       sharedPreferences.setString("id", fireUser.uid);
       sharedPreferences.setString("Name", username);

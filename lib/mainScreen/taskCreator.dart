@@ -27,6 +27,9 @@ class _taskCreationState extends State<taskCreation> {
           mainAxisAlignment: MainAxisAlignment.center,
           children:  [
             TextField(
+              textInputAction: TextInputAction.newline,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
               controller: controller,
               autofocus: true,
               decoration: const InputDecoration(
