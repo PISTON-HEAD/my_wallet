@@ -43,6 +43,7 @@ Future signUp(String email, String password, String username) async {
             "Count":1,
             "id":times,
             "Category Count":1,
+            "Completed Tasks":0,
           }),
 
       });

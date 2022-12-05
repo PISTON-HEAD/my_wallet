@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:transition/transition.dart';
+import 'package:wave_linear_progress_indicator/wave_linear_progress_indicator.dart';
 // ignore: camel_case_types
 
 class homeScreen extends StatefulWidget {
@@ -94,6 +95,7 @@ var times = "";
 
   int categoryCounter = 0;
   int count=0;
+  var clickId = "";
 
   @override
   Widget build(BuildContext context) {
@@ -268,12 +270,13 @@ var times = "";
                         times = DateTime.now().toString().substring(0,21);
                         FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").doc(times).set({
                           "Category":"Create Category",
-                          "Created Time":DateTime.now().toString(),
+                          "Created Time":times,
                           "Tasks":[],
                           "Checker":[],
                           "Count":0,
                           "id":times,
                           "Category Count":categoryCounter,
+                          "Completed Tasks":0,
                         });
                         scrollUp();
                         setState(() {
@@ -315,6 +318,7 @@ var times = "";
                                 controller: sController,
                                 itemBuilder: (context, index) {
                                   count = snapshot.hasData ? snapshot.data!.docs.length : 0;
+                                  clickId = count==0?"":snapshot.data?.docs[count-1]["id"];
                                   categoryCounter = snapshot.hasData ?snapshot.data!.docs.length - index:0;
                                   return AnimatedContainer(
                                     curve: Curves.fastOutSlowIn,
@@ -322,8 +326,11 @@ var times = "";
                                     decoration: BoxDecoration(
                                         color: drawerColor(),
                                         borderRadius: BorderRadius.circular(20)),
-                                    duration: const Duration(seconds: 8),
+                                    duration: const Duration(seconds: 2),
                                     child: MaterialButton(
+                                      onLongPress: (){
+                                      //edit the name
+                                      },
                                       onPressed: (){
                                         setState(() {
                                           idCat = snapshot.data?.docs[count - 1-index]["id"];
@@ -341,9 +348,17 @@ var times = "";
                                           ),
                                           const SizedBox(height: 5,),
                                           Text(
-                                            "${snapshot.data!.docs[count - 1 -index]["Category"]} ${snapshot.data!.docs.length - index} ",
+                                            "${snapshot.data!.docs[count - 1 -index]["Category"]} ${snapshot.data!.docs.length - index}    ",
                                             style: categoryStyle(const Color.fromRGBO(255, 255, 255, 0.8),FontWeight.bold,21),
                                           ),
+                                          // Container(
+                                          //   width: MediaQuery.of(context).size.width/3,
+                                          //   child: const WaveLinearProgressIndicator(
+                                          //     color: Colors.orange,
+                                          //     value: 1,
+                                          //     enableBounceAnimation: true,
+                                          //   ),
+                                          // ),
                                         ],
                                       ),
                                     ),
@@ -394,12 +409,16 @@ var times = "";
                                 value: snapshot.data!.docs[0]["Checker"][index],
                                 onChanged: (val){
                                  var checker = snapshot.data!.docs[0]["Checker"];
+                                 var completed = snapshot.data!.docs[0]["Completed Tasks"];
                                  checker[index] = !checker[index];
-                                 print(checker);
-                                 print(idCat);
-                                 FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").doc(idCat).update(
+                                 checker[index]?FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").doc(idCat).update(
                                      {
                                        "Checker":checker,
+                                       "Completed Tasks":completed+1,
+                                     }):FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").doc(idCat).update(
+                                     {
+                                       "Checker":checker,
+                                       "Completed Tasks":completed-1,
                                      });
                                 },
                               ),
