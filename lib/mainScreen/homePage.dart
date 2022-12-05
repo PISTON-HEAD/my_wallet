@@ -315,7 +315,6 @@ var times = "";
                                 controller: sController,
                                 itemBuilder: (context, index) {
                                   count = snapshot.hasData ? snapshot.data!.docs.length : 0;
-                                  idCat = count==0?"":snapshot.data?.docs[count-1]["id"];
                                   categoryCounter = snapshot.hasData ?snapshot.data!.docs.length - index:0;
                                   return AnimatedContainer(
                                     curve: Curves.fastOutSlowIn,
@@ -369,7 +368,6 @@ var times = "";
                             controller: taskController,
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,
-
                             itemCount: snapshot.hasData && snapshot.data!.docs[0]["Count"]>=1? snapshot.data!.docs[0]["Count"]: 0,
                             itemBuilder: (context,index){
                           return
@@ -397,6 +395,8 @@ var times = "";
                                 onChanged: (val){
                                  var checker = snapshot.data!.docs[0]["Checker"];
                                  checker[index] = !checker[index];
+                                 print(checker);
+                                 print(idCat);
                                  FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").doc(idCat).update(
                                      {
                                        "Checker":checker,
