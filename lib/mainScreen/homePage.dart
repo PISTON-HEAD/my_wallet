@@ -97,6 +97,11 @@ var times = "";
   int count=0;
   var clickId = "";
 
+
+  double progressValue(){
+    return 0.0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AdvancedDrawer(
@@ -335,6 +340,7 @@ var times = "";
                                         setState(() {
                                           idCat = snapshot.data?.docs[count - 1-index]["id"];
                                         });
+                                        print(snapshot.data!.docs[count-1-index]["Completed Tasks"]);
                                       },
                                       shape:  const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
                                       padding:const EdgeInsets.symmetric(
@@ -351,14 +357,18 @@ var times = "";
                                             "${snapshot.data!.docs[count - 1 -index]["Category"]} ${snapshot.data!.docs.length - index}    ",
                                             style: categoryStyle(const Color.fromRGBO(255, 255, 255, 0.8),FontWeight.bold,21),
                                           ),
-                                          // Container(
-                                          //   width: MediaQuery.of(context).size.width/3,
-                                          //   child: const WaveLinearProgressIndicator(
-                                          //     color: Colors.orange,
-                                          //     value: 1,
-                                          //     enableBounceAnimation: true,
-                                          //   ),
-                                          // ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 30),
+                                            child: SizedBox(
+                                              width: MediaQuery.of(context).size.width/3,
+                                              child:  LinearProgressIndicator(
+                                                color: Colors.tealAccent,
+                                                minHeight: 7,
+                                                backgroundColor: Colors.white38,
+                                                value: snapshot.data!.docs[count-1-index]["Completed Tasks"]/snapshot.data!.docs[count-1-index]["Count"],
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
