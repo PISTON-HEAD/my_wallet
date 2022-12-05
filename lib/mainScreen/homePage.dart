@@ -15,7 +15,7 @@ import 'package:transition/transition.dart';
 
 class homeScreen extends StatefulWidget {
   final String userName;
-  const homeScreen({Key? key, required this.userName})
+  const homeScreen({Key? key,  required this.userName})
       : super(key: key) // ignore: no_logic_in_create_state
   ;
 
@@ -93,6 +93,7 @@ var times = "";
   var isChecked = false;
 
   int categoryCounter = 0;
+  int count=0;
 
   @override
   Widget build(BuildContext context) {
@@ -272,6 +273,7 @@ var times = "";
                           "Checker":[],
                           "Count":0,
                           "id":times,
+                          "Category Count":categoryCounter,
                         });
                         scrollUp();
                         setState(() {
@@ -312,7 +314,9 @@ var times = "";
                                 itemCount: snapshot.hasData ? snapshot.data!.docs.length : 0,
                                 controller: sController,
                                 itemBuilder: (context, index) {
-                                  int count = snapshot.hasData ? snapshot.data!.docs.length : 0;
+                                  count = snapshot.hasData ? snapshot.data!.docs.length : 0;
+                                  idCat = count==0?"":snapshot.data?.docs[count-1]["id"];
+                                  categoryCounter = snapshot.hasData ?snapshot.data!.docs.length - index:0;
                                   return AnimatedContainer(
                                     curve: Curves.fastOutSlowIn,
                                     margin:const EdgeInsets.symmetric(horizontal: 5),
@@ -355,7 +359,7 @@ var times = "";
                  SizedBox(height:MediaQuery.of(context).size.width/12,),
                  Text("Today's Tasks",style: sideHeadingStyle(drawerTextColor, FontWeight.w600, 20),),
                 const SizedBox(height:15,),
-                idCat==""?const SizedBox():StreamBuilder<QuerySnapshot>(
+                if (idCat=="") const SizedBox() else StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").where("id",isEqualTo:idCat).snapshots(),
                   builder: (context, snapshot) {
                     return SingleChildScrollView(
@@ -372,7 +376,7 @@ var times = "";
                             Padding(
                             padding: const EdgeInsets.only(top: 4.0,bottom: 4,right: 20),
                             child: ListTile(
-                              title: Text("${snapshot.data!.docs[0]["Tasks"][index]}",style: categoryStyle(const Color.fromRGBO(255, 255, 255, 0.95), FontWeight.w600, 18),),
+                              title: Text("${snapshot.data!.docs[0]["Tasks"][index]}",style:snapshot.data!.docs[0]["Checker"][index]?const TextStyle(color: Colors.white54,fontSize: 18,fontWeight: FontWeight.w500,decoration: TextDecoration.lineThrough): categoryStyle(const Color.fromRGBO(255, 255, 255, 0.95), FontWeight.w600, 18),),
                               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
                               tileColor: drawerColor(),
                               leading: CustomCheckBox(
@@ -387,10 +391,16 @@ var times = "";
                                 shouldShowBorder: true,
                                 checkedIconColor: Colors.white,
                                 splashColor: Colors.transparent,
+                                splashRadius: 20,
                                 tooltip: "Complete or redo task",
                                 value: snapshot.data!.docs[0]["Checker"][index],
                                 onChanged: (val){
-
+                                 var checker = snapshot.data!.docs[0]["Checker"];
+                                 checker[index] = !checker[index];
+                                 FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").doc(idCat).update(
+                                     {
+                                       "Checker":checker,
+                                     });
                                 },
                               ),
                               // decoration: BoxDecoration(

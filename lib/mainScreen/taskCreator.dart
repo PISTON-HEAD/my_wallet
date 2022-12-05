@@ -17,6 +17,7 @@ class _taskCreationState extends State<taskCreation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(""),
         elevation: 0,
         backgroundColor: backColor(),
       ),

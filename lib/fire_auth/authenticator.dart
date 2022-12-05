@@ -42,6 +42,7 @@ Future signUp(String email, String password, String username) async {
             "Checker":[false],
             "Count":1,
             "id":times,
+            "Category Count":1,
           }),
 
       });
