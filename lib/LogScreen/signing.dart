@@ -2,9 +2,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_wallet/fire_auth/authenticator.dart';
-import 'package:my_wallet/lottie/intro.dart';
 import 'package:my_wallet/mainScreen/homePage.dart';
 
 // ignore: camel_case_types
@@ -32,9 +32,13 @@ class _signingInState extends State<signingIn> {
   String errorMsg = "";
   IconData passwordVisibility = Icons.visibility_off;
   int flag = 0;
+  bool screenLoader = false;
 
   signUpUser() {
     if (formKey.currentState!.validate()) {
+      setState(() {
+        screenLoader=true;
+      });
       signUp(emailController.text, passwordController.text, nameController.text)
           .then((value) => {
                 if (value == null)
@@ -42,6 +46,7 @@ class _signingInState extends State<signingIn> {
                     //Go to next Screen
                     setState(() {
                       error = false;
+                      screenLoader=false;
                     }),
                     print("User Created Without Interruption."),
                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => homeScreen(userName: nameController.text.toString(),))),
@@ -50,6 +55,7 @@ class _signingInState extends State<signingIn> {
                   {
                     setState(() {
                       error = true;
+                      screenLoader=false;
                       int i;
                       for (i = 1; i < value.toString().length; i++) {
                         if (value.toString()[i] == "]") {
@@ -66,6 +72,9 @@ class _signingInState extends State<signingIn> {
   FirebaseAuth auth = FirebaseAuth.instance;
   logInUser()  {
     if (formKey.currentState!.validate()) {
+      setState(() {
+        screenLoader=true;
+      });
       logIn(emailController.text, passwordController.text).then((value) {
 
             if (value == null)
@@ -88,6 +97,7 @@ class _signingInState extends State<signingIn> {
               {
                 setState(() {
                   error = true;
+                  screenLoader=false;
                   int i;
                   for (i = 1; i < value.toString().length; i++) {
                     if (value.toString()[i] == "]") {
@@ -105,7 +115,18 @@ class _signingInState extends State<signingIn> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromRGBO(22, 23, 48, 1),
-        body: Form(
+        body: screenLoader?Center(
+          child: ProgressHUD(
+            indicatorColor: Colors.black,
+            backgroundColor: Colors.black,
+            barrierEnabled: true,
+            indicatorWidget: const LinearProgressIndicator(
+              color: Colors.white70,
+
+            ),
+            textStyle: const TextStyle(color: Colors.white54),
+              child: const Text("Creating account"),),
+        ):Form(
           key: formKey,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 45.0,),

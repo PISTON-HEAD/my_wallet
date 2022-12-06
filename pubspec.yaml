@@ -50,7 +50,8 @@ dependencies:
   advanced_search: ^2.2.3
   get: ^4.6.5
   flutter_progress_hud: ^2.0.2
-  wave_linear_progress_indicator: ^0.1.0
+  simple_progress_indicators: ^0.2.0
+  adaptive_dialog: ^1.8.0+1
 
 dev_dependencies:
   flutter_test:
