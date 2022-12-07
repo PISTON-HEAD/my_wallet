@@ -100,6 +100,7 @@ var times = "";
   int count=0;
   var clickId = "";
   var strCategory = "";
+  var animatedContainerWidth = 50.0;
 
 
   TextEditingController catController = TextEditingController();
@@ -256,207 +257,205 @@ var times = "";
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "What's up, $userName!",
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 42,
-                      fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(
-                  height: 45,
-                ),
-                Text(
-                  "CATEGORIES",
-                  style: TextStyle(
-                      color: drawerTextColor,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.7),
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-                Row(
-                  children: [
-                    FloatingActionButton(
-                      onPressed: () {
-                        times = DateTime.now().toString().substring(0,21);
-                        FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").doc(times).set({
-                          "Category":"Create Category",
-                          "Created Time":times,
-                          "Tasks":[],
-                          "Checker":[],
-                          "Count":0,
-                          "id":times,
-                          "Category Count":categoryCounter,
-                          "Completed Tasks":0,
-                        });
-                        scrollUp();
-                        setState(() {
-                          idCat =times;
-                        });
-                        },
-                      elevation: 10,
-                      backgroundColor: drawerColor(),
-                      tooltip: "CREATE CATEGORIES",
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0)),
-                      child: const Center(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 8),
-                          child: Icon(
-                            Icons.add,
-                            size: 35,
-                            color: Colors.white70,
-                          ),
+        body: Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "What's up, $userName!",
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 42,
+                    fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(
+                height: 45,
+              ),
+              Text(
+                "CATEGORIES",
+                style: TextStyle(
+                    color: drawerTextColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.7),
+              ),
+               SizedBox(
+                height: MediaQuery.of(context).size.width/28,
+              ),
+              Row(
+                children: [
+                  FloatingActionButton(
+                    onPressed: () {
+
+                      times = DateTime.now().toString().substring(0,21);
+                      FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").doc(times).set({
+                        "Category":"Create Category",
+                        "Created Time":times,
+                        "Tasks":[],
+                        "Checker":[],
+                        "Count":0,
+                        "id":times,
+                        "Category Count":categoryCounter,
+                        "Completed Tasks":0,
+                      });
+                      scrollUp();
+                      setState(() {
+                        idCat =times;
+                      });
+                      },
+                    elevation: 10,
+                    backgroundColor: drawerColor(),
+                    tooltip: "CREATE CATEGORIES",
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0)),
+                    child: const Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 8),
+                        child: Icon(
+                          Icons.add,
+                          size: 35,
+                          color: Colors.white70,
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").snapshots(),
-                      builder: (context, snapshot) {
-                        return SingleChildScrollView(
-                          child: SizedBox(
-                            height: 125,
-                            width: MediaQuery.of(context).size.width/1.4,
-                            child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                physics: const ClampingScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: snapshot.hasData ? snapshot.data!.docs.length : 0,
-                                controller: sController,
-                                itemBuilder: (context, index) {
-                                  count = snapshot.hasData ? snapshot.data!.docs.length : 0;
-                                  clickId = count==0?"":snapshot.data?.docs[count-1]["id"];
-                                  categoryCounter = snapshot.hasData ?snapshot.data!.docs.length - index:0;
-                                  return AnimatedContainer(
-                                    curve: Curves.fastOutSlowIn,
-                                    margin:const EdgeInsets.symmetric(horizontal: 5),
-                                    decoration: BoxDecoration(
-                                        color: drawerColor(),
-                                        borderRadius: BorderRadius.circular(20)),
-                                    duration: const Duration(seconds: 2),
-                                    child: MaterialButton(
-                                      onLongPress: (){
-                                      //edit the name
-                                        idCat = snapshot.data?.docs[count - 1-index]["id"];
-                                        catController.text = "";
-                                      showDialog(context: context, builder: ((context) {
-                                        return  AlertDialog(
+                  ),
+                   SizedBox(
+                    width: MediaQuery.of(context).size.width/65,
+                  ),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").snapshots(),
+                    builder: (context, snapshot) {
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.width/3.157,
+                        width: MediaQuery.of(context).size.width/1.4,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            physics: const ClampingScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: snapshot.hasData ? snapshot.data!.docs.length : 0,
+                            controller: sController,
+                            itemBuilder: (context, index) {
+                              count = snapshot.hasData ? snapshot.data!.docs.length : 0;
+                              clickId = count==0?"":snapshot.data?.docs[count-1]["id"];
+                              categoryCounter = snapshot.hasData ?snapshot.data!.docs.length - index:0;
+                              return AnimatedContainer(
+                                width:MediaQuery.of(context).size.width/2,
+                                curve: Curves.fastOutSlowIn,
+                                margin:const EdgeInsets.symmetric(horizontal: 5),
+                                decoration: BoxDecoration(
+                                    color: drawerColor(),
+                                    borderRadius: BorderRadius.circular(20)),
+                                duration: const Duration(seconds: 2),
+                                child: MaterialButton(
+                                  onLongPress: (){
+                                  //edit the name
+                                    idCat = snapshot.data?.docs[count - 1-index]["id"];
+                                    catController.text = "";
+                                  showDialog(context: context, builder: ((context) {
+                                    return  AlertDialog(
 
-                                          actions: [
-                                           Row(
-                                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                             children: [
-                                               TextButton(
-                                                   onPressed: (){
-                                                     var deleteCat = idCat;
-                                                     idCat="";
-                                                     Timer(const Duration(milliseconds: 400), () {
-                                                       FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").doc(deleteCat).delete();
+                                      actions: [
+                                       Row(
+                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                         children: [
+                                           TextButton(
+                                               onPressed: (){
+                                                 var deleteCat = idCat;
+                                                 idCat="";
+                                                 Timer(const Duration(milliseconds: 400), () {
+                                                   FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").doc(deleteCat).delete();
+                                                 });
+                                                 Navigator.of(context).pop();
+                                               }, child: const Text("Delete",style: TextStyle(color: Colors.redAccent),)),
+                                           TextButton(
+                                               onPressed: (){
+                                                 catController.text==""?Navigator.of(context).pop():FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").doc(idCat).update(
+                                                     {
+                                                       "Category":catController.text,
                                                      });
-                                                     Navigator.of(context).pop();
-                                                   }, child: const Text("Delete",style: TextStyle(color: Colors.redAccent),)),
-                                               TextButton(
-                                                   onPressed: (){
-                                                     catController.text==""?Navigator.of(context).pop():FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").doc(idCat).update(
-                                                         {
-                                                           "Category":catController.text,
-                                                         });
-                                                     catController.text = "";
-                                                     Navigator.of(context).pop();
-                                                   }, child: const Text("Change",style: TextStyle(color: Colors.white),)),
+                                                 catController.text = "";
+                                                 Navigator.of(context).pop();
+                                               }, child: const Text("Change",style: TextStyle(color: Colors.white),)),
 
-                                             ],
-                                           )
+                                         ],
+                                       )
 
-                                          ],
-                                          backgroundColor: Colors.black87,
-                                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                                          title: const Text("Change Category Name",style: TextStyle(color: Colors.white),),
-                                          elevation: 20,
-                                          content: TextField(
-                                            controller: catController,
-                                            autocorrect: true,
-                                            autofocus: true,
-                                            style:const  TextStyle(color: Colors.white70),
-                                            decoration:const  InputDecoration(
-                                              hintText: "Enter name",
-                                              labelText: "Name",
-                                              hintStyle: TextStyle(color: Colors.white60),
-                                            ),
-                                            onSubmitted: (value){
-                                              FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").doc(idCat).update(
-                                                  {
-                                                    "Category":value,
-                                                  });
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          contentTextStyle:const TextStyle(color: Colors.white70),
-                                        );
-                                      }));
-                                      },
-                                      onPressed: (){
-                                        setState(() {
-                                          idCat = snapshot.data?.docs[count - 1-index]["id"];
-                                        });
-                                      },
-                                      shape:  const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
-                                      padding:const EdgeInsets.only(
-                                          left: 15,right: 15, top: 15),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "${snapshot.data!.docs[count-1-index]["Count"]} Task",
-                                            style: categoryStyle(Colors.white54,FontWeight.bold,18),
-                                          ),
-                                          const SizedBox(height: 5,),
-                                          Text(
-                                            "${snapshot.data!.docs[count - 1 -index]["Category"]}  ",
-                                            style: categoryStyle(const Color.fromRGBO(255, 255, 255, 0.8),FontWeight.bold,21),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 55),
-                                            child: Center(
-                                              child: ProgressBar(
-                                                gradient:  LinearGradient(
-                                                  begin: Alignment.topLeft,
-                                                  end: Alignment.bottomRight,
-                                                  colors:snapshot.data!.docs.length - index %2==0? [Colors.teal, Colors.tealAccent]:[Colors.orange, Colors.deepOrangeAccent],
-                                                ),
-                                                backgroundColor: Colors.black38,
-                                                value:snapshot.data!.docs[count-1-index]["Count"]>=1? snapshot.data!.docs[count-1-index]["Completed Tasks"]/snapshot.data!.docs[count-1-index]["Count"]:0,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                      ],
+                                      backgroundColor: Colors.black87,
+                                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                                      title: const Text("Change Category Name",style: TextStyle(color: Colors.white),),
+                                      elevation: 20,
+                                      content: TextField(
+                                        controller: catController,
+                                        autocorrect: true,
+                                        autofocus: true,
+                                        style:const  TextStyle(color: Colors.white70),
+                                        decoration:const  InputDecoration(
+                                          hintText: "Enter name",
+                                          labelText: "Name",
+                                          hintStyle: TextStyle(color: Colors.white60),
+                                        ),
+                                        onSubmitted: (value){
+                                          FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").doc(idCat).update(
+                                              {
+                                                "Category":value,
+                                              });
+                                          Navigator.of(context).pop();
+                                        },
                                       ),
-                                    ),
-                                  );
-                                }),
-                          ),
-                        );
-                      }
-                    ),
-                  ],
-                ),
-                 SizedBox(height:MediaQuery.of(context).size.width/12,),
-                 Text("Today's Tasks",style: sideHeadingStyle(drawerTextColor, FontWeight.w600, 20),),
-                const SizedBox(height:15,),
-                if (idCat=="") const SizedBox() else StreamBuilder<QuerySnapshot>(
+                                      contentTextStyle:const TextStyle(color: Colors.white70),
+                                    );
+                                  }));
+                                  },
+                                  onPressed: (){
+                                    setState(() {
+                                      idCat = snapshot.data?.docs[count - 1-index]["id"];
+                                    });
+                                  },
+                                  shape:  const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                                  padding:const EdgeInsets.only(
+                                      left: 15,right: 15, top: 15),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "${snapshot.data!.docs[count-1-index]["Count"]} Task",
+                                        style: categoryStyle(Colors.white54,FontWeight.bold,18),
+                                      ),
+                                       SizedBox(height:MediaQuery.of(context).size.width/50,),
+                                      Text(
+                                        "${snapshot.data!.docs[count - 1 -index]["Category"]}  ",
+                                        style: categoryStyle(const Color.fromRGBO(255, 255, 255, 0.8),FontWeight.bold,19),
+                                      ),
+                                       SizedBox(height: MediaQuery.of(context).size.width/7.35,),
+                                      Center(
+                                        child: ProgressBar(
+                                          gradient:  LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors:snapshot.data!.docs.length - index %2==0? [Colors.teal, Colors.tealAccent]:[Colors.orange, Colors.deepOrangeAccent],
+                                          ),
+                                          backgroundColor: Colors.black38,
+                                          value:snapshot.data!.docs[count-1-index]["Count"]>=1? snapshot.data!.docs[count-1-index]["Completed Tasks"]/snapshot.data!.docs[count-1-index]["Count"]:0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }),
+                      );
+                    }
+                  ),
+                ],
+              ),
+               SizedBox(height:MediaQuery.of(context).size.width/12,),
+               Text("Today's Tasks",style: sideHeadingStyle(drawerTextColor, FontWeight.w600, 20),),
+               SizedBox(height:MediaQuery.of(context).size.width/40,),
+              if (idCat=="") const SizedBox() else Expanded(
+                child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance.collection("User Tasks").doc("$userName||${auth.currentUser!.uid}").collection("Categories").where("id",isEqualTo:idCat).snapshots(),
                   builder: (context, snapshot) {
                     return SingleChildScrollView(
@@ -472,7 +471,7 @@ var times = "";
                             Padding(
                             padding: const EdgeInsets.only(top: 4.0,bottom: 4,right: 20),
                             child: ListTile(
-                              title: Text("${snapshot.data!.docs[0]["Tasks"][index]}",style:snapshot.data!.docs[0]["Checker"][index]?const TextStyle(color: Colors.white54,fontSize: 18,fontWeight: FontWeight.w500,decoration: TextDecoration.lineThrough): categoryStyle(const Color.fromRGBO(255, 255, 255, 0.95), FontWeight.w600, 18),),
+                              title: Text("${snapshot.data!.docs[0]["Tasks"][index]}",style:snapshot.data!.docs[0]["Checker"][index]?const TextStyle(color: Colors.white54,fontSize: 17,fontWeight: FontWeight.w500,decoration: TextDecoration.lineThrough): categoryStyle(const Color.fromRGBO(255, 255, 255, 0.95), FontWeight.w600, 17),),
                               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
                               tileColor: drawerColor(),
                               leading: CustomCheckBox(
@@ -512,8 +511,8 @@ var times = "";
                     );
                   }
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         floatingActionButton: FloatingActionButton(
