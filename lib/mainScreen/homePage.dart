@@ -412,6 +412,7 @@ var times = "";
                                   }));
                                   },
                                   onPressed: (){
+                                    print(snapshot.data!.docs.length);
                                     setState(() {
                                       idCat = snapshot.data?.docs[count - 1-index]["id"];
                                       taskIdCreator = idCat;
@@ -438,7 +439,8 @@ var times = "";
                                           gradient:  LinearGradient(
                                             begin: Alignment.topLeft,
                                             end: Alignment.bottomRight,
-                                            colors:snapshot.data!.docs.length-1 - index %2==1? [Colors.teal, Colors.tealAccent]:[Colors.orange, Colors.deepOrangeAccent],
+                                            stops:const [0.26,0.9],
+                                            colors:(index) %2==0? [Colors.teal, Colors.tealAccent]:[Colors.deepOrangeAccent,Colors.orange, ],
                                           ),
                                           backgroundColor: Colors.black38,
                                           value:snapshot.data!.docs[count-1-index]["Count"]>=1? snapshot.data!.docs[count-1-index]["Completed Tasks"]/snapshot.data!.docs[count-1-index]["Count"]:0,
