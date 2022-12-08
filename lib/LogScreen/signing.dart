@@ -2,7 +2,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_wallet/fire_auth/authenticator.dart';
 import 'package:my_wallet/mainScreen/homePage.dart';
@@ -116,16 +115,10 @@ class _signingInState extends State<signingIn> {
     return Scaffold(
         backgroundColor: const Color.fromRGBO(22, 23, 48, 1),
         body: screenLoader?Center(
-          child: ProgressHUD(
-            indicatorColor: Colors.black,
-            backgroundColor: Colors.black,
-            barrierEnabled: true,
-            indicatorWidget: const LinearProgressIndicator(
-              color: Colors.white70,
-
-            ),
-            textStyle: const TextStyle(color: Colors.white54),
-              child: const Text("Creating account"),),
+          child: LottieBuilder.asset("assets/wallet_signIn.json",
+          repeat: false,
+          animate: true,
+          ),
         ):Form(
           key: formKey,
           child: Padding(
