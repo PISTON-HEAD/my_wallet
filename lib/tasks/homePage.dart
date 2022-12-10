@@ -458,10 +458,10 @@ class _homeScreenState extends State<homeScreen> {
                                                                         .update({
                                                                         "Category":
                                                                             catController.text,
-                                                                      }).whenComplete(() =>
-                                                                            {
-                                                                              Navigator.of(context).pop(),
-                                                                            });
+                                                                      });
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
                                                                 catController
                                                                     .text = "";
                                                               },
@@ -580,7 +580,7 @@ class _homeScreenState extends State<homeScreen> {
                                                     colors: (index) % 2 == 0
                                                         ? [
                                                             Colors.teal,
-                                                            Colors.tealAccent
+                                                            Colors.cyanAccent
                                                           ]
                                                         : [
                                                             Colors
@@ -653,7 +653,10 @@ class _homeScreenState extends State<homeScreen> {
                                         taskIdCreator = idCat;
                                         return Dismissible(
                                           key: Key(snapshot.data!.docs[0]
-                                              ["Tasks"][index]),
+                                              ["Tasks"][snapshot.data!.docs[0]
+                                                  ["Count"] -
+                                              1 -
+                                              index]),
                                           onDismissed: (value) {
                                             var tasks =
                                                 snapshot.data!.docs[0]["Tasks"];
@@ -661,13 +664,23 @@ class _homeScreenState extends State<homeScreen> {
                                                 ["Checker"];
                                             var completed = snapshot.data!
                                                 .docs[0]["Completed Tasks"];
-                                            if (checker[index]) {
+                                            if (checker[snapshot.data!.docs[0]
+                                                    ["Count"] -
+                                                1 -
+                                                index]) {
                                               completed -= 1;
                                             }
                                             tasks.remove(snapshot.data!.docs[0]
-                                                ["Tasks"][index]);
-                                            checker.remove(snapshot.data!
-                                                .docs[0]["Checker"][index]);
+                                                ["Tasks"][snapshot.data!.docs[0]
+                                                    ["Count"] -
+                                                1 -
+                                                index]);
+                                            checker.remove(snapshot
+                                                    .data!.docs[0]["Checker"][
+                                                snapshot.data!.docs[0]
+                                                        ["Count"] -
+                                                    1 -
+                                                    index]);
                                             FirebaseFirestore.instance
                                                 .collection("User Tasks")
                                                 .doc(
@@ -688,9 +701,13 @@ class _homeScreenState extends State<homeScreen> {
                                                 top: 4.0, bottom: 4, right: 20),
                                             child: ListTile(
                                               title: Text(
-                                                "${snapshot.data!.docs[0]["Tasks"][index]}",
+                                                "${snapshot.data!.docs[0]["Tasks"][snapshot.data!.docs[0]["Count"] - 1-index]}",
                                                 style: snapshot.data!.docs[0]
-                                                        ["Checker"][index]
+                                                        ["Checker"][snapshot
+                                                            .data!
+                                                            .docs[0]["Count"] -
+                                                        1 -
+                                                        index]
                                                     ? const TextStyle(
                                                         color: Colors.white54,
                                                         fontSize: 17,
@@ -736,16 +753,28 @@ class _homeScreenState extends State<homeScreen> {
                                                 tooltip:
                                                     "Complete or redo task",
                                                 value: snapshot.data!.docs[0]
-                                                    ["Checker"][index],
+                                                    ["Checker"][snapshot.data!
+                                                        .docs[0]["Count"] -
+                                                    1 -
+                                                    index],
                                                 onChanged: (val) {
                                                   var checker = snapshot
                                                       .data!.docs[0]["Checker"];
                                                   var completed =
                                                       snapshot.data!.docs[0]
                                                           ["Completed Tasks"];
-                                                  checker[index] =
-                                                      !checker[index];
-                                                  checker[index]
+                                                  checker[snapshot.data!.docs[0]
+                                                          ["Count"] -
+                                                      1 -
+                                                      index] = !checker[snapshot
+                                                          .data!
+                                                          .docs[0]["Count"] -
+                                                      1 -
+                                                      index];
+                                                  checker[snapshot.data!.docs[0]
+                                                              ["Count"] -
+                                                          1 -
+                                                          index]
                                                       ? FirebaseFirestore
                                                           .instance
                                                           .collection(
@@ -783,23 +812,64 @@ class _homeScreenState extends State<homeScreen> {
                                                   var checker = snapshot
                                                       .data!.docs[0]["Checker"];
                                                   tasks.remove(snapshot.data!
-                                                      .docs[0]["Tasks"][index]);
-                                                  checker.remove(
+                                                      .docs[0]["Tasks"][snapshot
+                                                          .data!
+                                                          .docs[0]["Count"] -
+                                                      1 -
+                                                      index]);
+                                                  checker.remove(snapshot.data!
+                                                          .docs[0]["Checker"][
                                                       snapshot.data!.docs[0]
-                                                          ["Checker"][index]);
-                                                  FirebaseFirestore.instance
-                                                      .collection("User Tasks")
-                                                      .doc(
-                                                          "$userName||${auth.currentUser!.uid}")
-                                                      .collection("Categories")
-                                                      .doc(idCat)
-                                                      .update({
-                                                    "Tasks": tasks,
-                                                    "Checker": checker,
-                                                    "Count": snapshot.data!
-                                                            .docs[0]["Count"] -
-                                                        1,
-                                                  });
+                                                              ["Count"] -
+                                                          1 -
+                                                          index]);
+                                                  snapshot.data!.docs[0]
+                                                              ["Checker"][
+                                                          snapshot.data!.docs[0]
+                                                                  ["Count"] -
+                                                              1 -
+                                                              index]
+                                                      ? FirebaseFirestore
+                                                          .instance
+                                                          .collection(
+                                                              "User Tasks")
+                                                          .doc(
+                                                              "$userName||${auth.currentUser!.uid}")
+                                                          .collection(
+                                                              "Categories")
+                                                          .doc(idCat)
+                                                          .update({
+                                                          "Tasks": tasks,
+                                                          "Checker": checker,
+                                                          "Count": snapshot
+                                                                      .data!
+                                                                      .docs[0]
+                                                                  ["Count"] -
+                                                              1,
+                                                          "Completed Tasks": snapshot
+                                                                      .data!
+                                                                      .docs[0][
+                                                                  "Completed Tasks"] -
+                                                              1
+                                                        })
+                                                      : FirebaseFirestore
+                                                          .instance
+                                                          .collection(
+                                                              "User Tasks")
+                                                          .doc(
+                                                              "$userName||${auth.currentUser!.uid}")
+                                                          .collection(
+                                                              "Categories")
+                                                          .doc(idCat)
+                                                          .update({
+                                                          "Tasks": tasks,
+                                                          "Checker": checker,
+                                                          "Count": snapshot
+                                                                      .data!
+                                                                      .docs[0]
+                                                                  ["Count"] -
+                                                              1,
+                                                        });
                                                 },
                                                 icon: const Icon(Icons.delete),
                                                 color: Colors.red[400],
