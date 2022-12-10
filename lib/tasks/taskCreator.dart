@@ -9,12 +9,12 @@ import '../notification/manager.dart';
 // ignore: camel_case_types
 class taskCreation extends StatefulWidget {
   final String taskId;
-   var snapshot;
+  var snapshot;
 
-   taskCreation({super.key, required this.taskId, required this.snapshot});
+  taskCreation({super.key, required this.taskId, required this.snapshot});
 
   @override
-  State<taskCreation> createState() => _taskCreationState(taskId,snapshot);
+  State<taskCreation> createState() => _taskCreationState(taskId, snapshot);
 }
 
 class _taskCreationState extends State<taskCreation> {
@@ -30,29 +30,33 @@ class _taskCreationState extends State<taskCreation> {
   DateTime dateTime = DateTime.now();
 
   NotifyManager manager = NotifyManager();
-   @override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     keeper();
     manager.initializeNotification();
   }
-  var tasks=[];
-  var checker =[];
+
+  var tasks = [];
+  var checker = [];
   var totalCount = 0;
   var category = "";
 
-
-  keeper(){
-    FirebaseFirestore.instance.collection("User Tasks").doc("${auth.currentUser!.displayName}||${auth.currentUser!.uid}").collection("Categories").where("id",isEqualTo: taskId).get().then((value) =>{
-      tasks = value.docs[0]["Tasks"],
-      checker = value.docs[0]["Checker"],
-      totalCount = value.docs[0]["Count"],
-      category = value.docs[0]["Category"],
-    });
+  keeper() {
+    FirebaseFirestore.instance
+        .collection("User Tasks")
+        .doc("${auth.currentUser!.displayName}||${auth.currentUser!.uid}")
+        .collection("Categories")
+        .where("id", isEqualTo: taskId)
+        .get()
+        .then((value) => {
+              tasks = value.docs[0]["Tasks"],
+              checker = value.docs[0]["Checker"],
+              totalCount = value.docs[0]["Count"],
+              category = value.docs[0]["Category"],
+            });
   }
-
-
 
   @override
   void dispose() {
@@ -66,15 +70,18 @@ class _taskCreationState extends State<taskCreation> {
       tasks.add(controller.text);
       checker.add(false);
       totalCount += 1;
-      FirebaseFirestore.instance.collection("User Tasks").doc("${auth.currentUser!.displayName}||${auth.currentUser!.uid}").collection("Categories").doc(taskId).update(
-          {
-            "Tasks":tasks,
-            "Checker":checker,
-            "Count":totalCount,
-          });
+      FirebaseFirestore.instance
+          .collection("User Tasks")
+          .doc("${auth.currentUser!.displayName}||${auth.currentUser!.uid}")
+          .collection("Categories")
+          .doc(taskId)
+          .update({
+        "Tasks": tasks,
+        "Checker": checker,
+        "Count": totalCount,
+      });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -105,29 +112,24 @@ class _taskCreationState extends State<taskCreation> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Container(
-                width: MediaQuery
-                    .of(context)
-                    .size
-                    .width / 1,
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .width / 7.5,
+                width: MediaQuery.of(context).size.width / 1,
+                height: MediaQuery.of(context).size.width / 7.5,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     color: Colors.transparent,
-                    border: Border.all(color: Colors.black45)
-                ),
+                    border: Border.all(color: Colors.black45)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     MaterialButton(
-                      onPressed: ()async {
+                      onPressed: () async {
                         final date = await PickDate();
                         if (date == null) return;
-                        dateTime =date;
+                        dateTime = date;
                         final timePick = await pickTime();
                         if (timePick == null) return;
                         final newDateTime = DateTime(
@@ -137,32 +139,43 @@ class _taskCreationState extends State<taskCreation> {
                           timePick.hour,
                           timePick.minute,
                         );
-                        manager.scheduleNotification(category, controller.text, newDateTime);
+                        manager.scheduleNotification(
+                            category, controller.text, newDateTime);
                       },
                       child: Row(
                         children: const [
-                          Icon(Icons.date_range, color: Colors.black45,),
-                          SizedBox(width: 5,),
-                          Text("Schedule Tasks", style: TextStyle(color: Colors.black45),),
+                          Icon(
+                            Icons.date_range,
+                            color: Colors.black45,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            "Schedule Tasks",
+                            style: TextStyle(color: Colors.black45),
+                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-
             ],
           ),
         ),
       ),
     );
   }
+
   Color backColor() => const Color(0xFFF7E9E0);
 //const Color(0xFFEBEDEE);
-  Future <DateTime?> PickDate()=> showDatePicker(context: context, initialDate: dateTime, firstDate: DateTime(2022), lastDate: DateTime(2026));
-  Future <TimeOfDay?> pickTime() => showTimePicker(context: context, initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute));
+  Future<DateTime?> PickDate() => showDatePicker(
+      context: context,
+      initialDate: dateTime,
+      firstDate: DateTime(2022),
+      lastDate: DateTime(2026));
+  Future<TimeOfDay?> pickTime() => showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute));
 }
-
-
-
-
