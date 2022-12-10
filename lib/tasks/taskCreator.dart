@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../notification/manager.dart';
+
 // ignore: camel_case_types
 class taskCreation extends StatefulWidget {
   final String taskId;
@@ -25,15 +27,20 @@ class _taskCreationState extends State<taskCreation> {
 
   _taskCreationState(this.taskId, this.snapshot);
 
-  @override
+  DateTime dateTime = DateTime.now();
+
+  NotifyManager manager = NotifyManager();
+   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     keeper();
+    manager.initializeNotification();
   }
   var tasks=[];
   var checker =[];
   var totalCount = 0;
+  var category = "";
 
 
   keeper(){
@@ -41,6 +48,7 @@ class _taskCreationState extends State<taskCreation> {
       tasks = value.docs[0]["Tasks"],
       checker = value.docs[0]["Checker"],
       totalCount = value.docs[0]["Count"],
+      category = value.docs[0]["Category"],
     });
   }
 
@@ -102,7 +110,7 @@ class _taskCreationState extends State<taskCreation> {
                 width: MediaQuery
                     .of(context)
                     .size
-                    .width / 3,
+                    .width / 1,
                 height: MediaQuery
                     .of(context)
                     .size
@@ -112,15 +120,34 @@ class _taskCreationState extends State<taskCreation> {
                     color: Colors.transparent,
                     border: Border.all(color: Colors.black45)
                 ),
-                child: MaterialButton(
-                  onPressed: () {},
-                  child: Row(
-                    children: const [
-                      Icon(Icons.date_range, color: Colors.black45,),
-                      SizedBox(width: 5,),
-                      Text("Today", style: TextStyle(color: Colors.black45),),
-                    ],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MaterialButton(
+                      onPressed: ()async {
+                        final date = await PickDate();
+                        if (date == null) return;
+                        dateTime =date;
+                        final timePick = await pickTime();
+                        if (timePick == null) return;
+                        final newDateTime = DateTime(
+                          dateTime.year,
+                          dateTime.month,
+                          dateTime.day,
+                          timePick.hour,
+                          timePick.minute,
+                        );
+                        manager.scheduleNotification(category, controller.text, newDateTime);
+                      },
+                      child: Row(
+                        children: const [
+                          Icon(Icons.date_range, color: Colors.black45,),
+                          SizedBox(width: 5,),
+                          Text("Schedule Tasks", style: TextStyle(color: Colors.black45),),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -132,7 +159,8 @@ class _taskCreationState extends State<taskCreation> {
   }
   Color backColor() => const Color(0xFFF7E9E0);
 //const Color(0xFFEBEDEE);
-
+  Future <DateTime?> PickDate()=> showDatePicker(context: context, initialDate: dateTime, firstDate: DateTime(2022), lastDate: DateTime(2026));
+  Future <TimeOfDay?> pickTime() => showTimePicker(context: context, initialTime: TimeOfDay(hour: dateTime.hour, minute: dateTime.minute));
 }
 
 

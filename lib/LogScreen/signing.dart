@@ -113,13 +113,6 @@ class _signingInState extends State<signingIn> {
     }
   }
 
-  NotifyManager manager = NotifyManager();
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    manager.initializeNotification();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -328,9 +321,7 @@ class _signingInState extends State<signingIn> {
                             )),
                         child: MaterialButton(
                             onPressed: ()  {
-                              var scheduledNotificationDateTime = DateTime.now().add(Duration(seconds: 5));
-                              manager.scheduleNotification("Notification", "This is a notification",scheduledNotificationDateTime);
-                            setState(() {
+                              setState(() {
                               checker=!checker;
                             });
                             },
