@@ -2,9 +2,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_wallet/fire_auth/authenticator.dart';
-import 'package:my_wallet/mainScreen/homePage.dart';
+
+import '../notification/manager.dart';
+import '../tasks/homePage.dart';
 
 // ignore: camel_case_types
 class signingIn extends StatefulWidget {
@@ -108,6 +111,14 @@ class _signingInState extends State<signingIn> {
               }
           });
     }
+  }
+
+  NotifyManager manager = NotifyManager();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    manager.initializeNotification();
   }
 
   @override
@@ -317,6 +328,8 @@ class _signingInState extends State<signingIn> {
                             )),
                         child: MaterialButton(
                             onPressed: ()  {
+                              var scheduledNotificationDateTime = DateTime.now().add(Duration(seconds: 5));
+                              manager.scheduleNotification("Notification", "This is a notification",scheduledNotificationDateTime);
                             setState(() {
                               checker=!checker;
                             });

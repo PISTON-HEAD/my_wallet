@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:my_wallet/lottie/intro.dart';
-import 'package:my_wallet/mainScreen/homePage.dart';
+import 'package:my_wallet/tasks/homePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void>  main() async {

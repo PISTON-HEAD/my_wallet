@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_wallet/LogScreen/signing.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 // ignore: camel_case_types
 class intros extends StatefulWidget {
