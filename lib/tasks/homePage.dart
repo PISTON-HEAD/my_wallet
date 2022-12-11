@@ -220,9 +220,7 @@ class _homeScreenState extends State<homeScreen> {
               ),
               ListTile(
                 onTap: () {
-                  setState(() {
-                    activateWallet = true;
-                  });
+                  setState(() {activateWallet = true;});
                 },
                 leading: const Icon(Icons.account_balance_wallet_outlined),
                 title: Text('Wallet', style: buildTextStyle),
@@ -284,8 +282,8 @@ class _homeScreenState extends State<homeScreen> {
                           fontSize: 42,
                           fontWeight: FontWeight.w600),
                     ),
-                    const SizedBox(
-                      height: 45,
+                     SizedBox(
+                      height: MediaQuery.of(context).size.width/15,
                     ),
                     Text(
                       "CATEGORIES",

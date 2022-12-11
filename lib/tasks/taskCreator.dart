@@ -3,7 +3,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../notification/manager.dart';
 
 // ignore: camel_case_types
@@ -116,49 +115,44 @@ class _taskCreationState extends State<taskCreation> {
                 height: 10,
               ),
               Container(
-                width: MediaQuery.of(context).size.width / 1,
+                width: MediaQuery.of(context).size.width / 2.5,
                 height: MediaQuery.of(context).size.width / 7.5,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     color: Colors.transparent,
                     border: Border.all(color: Colors.black45)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    MaterialButton(
-                      onPressed: () async {
-                        final date = await PickDate();
-                        if (date == null) return;
-                        dateTime = date;
-                        final timePick = await pickTime();
-                        if (timePick == null) return;
-                        final newDateTime = DateTime(
-                          dateTime.year,
-                          dateTime.month,
-                          dateTime.day,
-                          timePick.hour,
-                          timePick.minute,
-                        );
-                        manager.scheduleNotification(
-                            category, controller.text, newDateTime);
-                      },
-                      child: Row(
-                        children: const [
-                          Icon(
-                            Icons.date_range,
-                            color: Colors.black45,
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            "Schedule Tasks",
-                            style: TextStyle(color: Colors.black45),
-                          ),
-                        ],
+                child: MaterialButton(
+                  onPressed: () async {
+                    final date = await PickDate();
+                    if (date == null) return;
+                    dateTime = date;
+                    final timePick = await pickTime();
+                    if (timePick == null) return;
+                    final newDateTime = DateTime(
+                      dateTime.year,
+                      dateTime.month,
+                      dateTime.day,
+                      timePick.hour,
+                      timePick.minute,
+                    );
+                    manager.scheduleNotification(
+                        category, controller.text, newDateTime);
+                  },
+                  child: Row(
+                    children: const [
+                      Icon(
+                        Icons.date_range,
+                        color: Colors.black45,
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        "Schedule Tasks",
+                        style: TextStyle(color: Colors.black45),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
