@@ -320,6 +320,10 @@ class _homeScreenState extends State<homeScreen> {
                             setState(() {
                               idCat = times;
                               taskIdCreator = idCat;
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('New category created'),
+                                duration: Duration(milliseconds: 1500),
+                              ),);
                             });
                           },
                           elevation: 10,
@@ -385,6 +389,9 @@ class _homeScreenState extends State<homeScreen> {
                                             horizontal: 5),
                                         decoration: BoxDecoration(
                                             color: drawerColor(),
+                                            border: Border.all(
+                                                color: idCat==snapshot.data
+                                                ?.docs[count - 1 - index]["id"]?Colors.grey:Colors.transparent,width: 1.6),
                                             borderRadius:
                                                 BorderRadius.circular(20)),
                                         duration: const Duration(seconds: 2),
@@ -393,6 +400,8 @@ class _homeScreenState extends State<homeScreen> {
                                             //edit the name
                                             idCat = snapshot.data
                                                 ?.docs[count - 1 - index]["id"];
+                                            strCategory = snapshot.data
+                                                ?.docs[count - 1 - index]["Category"];
                                             catController.text = "";
                                             showDialog(
                                                 context: context,
@@ -409,6 +418,7 @@ class _homeScreenState extends State<homeScreen> {
                                                                 var deleteCat =
                                                                     idCat;
                                                                 idCat = "";
+                                                                strCategory = "";
                                                                 Timer(
                                                                     const Duration(
                                                                         milliseconds:
@@ -530,6 +540,9 @@ class _homeScreenState extends State<homeScreen> {
                                               idCat = snapshot.data
                                                       ?.docs[count - 1 - index]
                                                   ["id"];
+                                              strCategory=snapshot.data
+                                                  ?.docs[count - 1 - index]
+                                              ["Category"];
                                               taskIdCreator = idCat;
                                             });
                                           },
@@ -615,7 +628,7 @@ class _homeScreenState extends State<homeScreen> {
                       height: MediaQuery.of(context).size.width / 12,
                     ),
                     Text(
-                      "Today's Tasks",
+                      strCategory==""?"Today's Tasks":"Category: $strCategory",
                       style: sideHeadingStyle(
                           drawerTextColor, FontWeight.w600, 20),
                     ),
@@ -650,49 +663,52 @@ class _homeScreenState extends State<homeScreen> {
                                       itemBuilder: (context, index) {
                                         taskIdCreator = idCat;
                                         return Dismissible(
+                                          direction: DismissDirection.endToStart,
                                           key: Key(snapshot.data!.docs[0]
                                               ["Tasks"][snapshot.data!.docs[0]
                                                   ["Count"] -
                                               1 -
                                               index]),
                                           onDismissed: (value) {
-                                            var tasks =
-                                                snapshot.data!.docs[0]["Tasks"];
-                                            var checker = snapshot.data!.docs[0]
-                                                ["Checker"];
-                                            var completed = snapshot.data!
-                                                .docs[0]["Completed Tasks"];
-                                            if (checker[snapshot.data!.docs[0]
-                                                    ["Count"] -
-                                                1 -
-                                                index]) {
-                                              completed -= 1;
-                                            }
-                                            tasks.remove(snapshot.data!.docs[0]
-                                                ["Tasks"][snapshot.data!.docs[0]
-                                                    ["Count"] -
-                                                1 -
-                                                index]);
-                                            checker.remove(snapshot
-                                                    .data!.docs[0]["Checker"][
-                                                snapshot.data!.docs[0]
-                                                        ["Count"] -
-                                                    1 -
-                                                    index]);
-                                            FirebaseFirestore.instance
-                                                .collection("User Tasks")
-                                                .doc(
-                                                    "$userName||${auth.currentUser!.uid}")
-                                                .collection("Categories")
-                                                .doc(idCat)
-                                                .update({
-                                              "Tasks": tasks,
-                                              "Checker": checker,
-                                              "Count": snapshot.data!.docs[0]
-                                                      ["Count"] -
-                                                  1,
-                                              "Completed Tasks": completed,
-                                            });
+                                           if(value == DismissDirection.endToStart){
+                                             var tasks =
+                                             snapshot.data!.docs[0]["Tasks"];
+                                             var checker = snapshot.data!.docs[0]
+                                             ["Checker"];
+                                             var completed = snapshot.data!
+                                                 .docs[0]["Completed Tasks"];
+                                             if (checker[snapshot.data!.docs[0]
+                                             ["Count"] -
+                                                 1 -
+                                                 index]) {
+                                               completed -= 1;
+                                             }
+                                             tasks.remove(snapshot.data!.docs[0]
+                                             ["Tasks"][snapshot.data!.docs[0]
+                                             ["Count"] -
+                                                 1 -
+                                                 index]);
+                                             checker.remove(snapshot
+                                                 .data!.docs[0]["Checker"][
+                                             snapshot.data!.docs[0]
+                                             ["Count"] -
+                                                 1 -
+                                                 index]);
+                                             FirebaseFirestore.instance
+                                                 .collection("User Tasks")
+                                                 .doc(
+                                                 "$userName||${auth.currentUser!.uid}")
+                                                 .collection("Categories")
+                                                 .doc(idCat)
+                                                 .update({
+                                               "Tasks": tasks,
+                                               "Checker": checker,
+                                               "Count": snapshot.data!.docs[0]
+                                               ["Count"] -
+                                                   1,
+                                               "Completed Tasks": completed,
+                                             });
+                                           }
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.only(
