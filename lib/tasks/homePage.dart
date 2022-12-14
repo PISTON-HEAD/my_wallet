@@ -39,6 +39,11 @@ class _homeScreenState extends State<homeScreen> {
 
   var times = "";
 
+
+  var deletedChecker = [];
+  var deletedTasks = [];
+  var deletedIndex = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -670,6 +675,18 @@ class _homeScreenState extends State<homeScreen> {
                                               1 -
                                               index]),
                                           onDismissed: (value) {
+                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+
+                                              content: Text("Tasks Deleted"),
+                                            duration: Duration(milliseconds: 1500),
+                                              elevation: 10,
+                                              action: SnackBarAction(
+                                                onPressed: (){
+
+                                                },
+                                                label: "Undo",
+                                              ),
+                                            ));
                                            if(value == DismissDirection.endToStart){
                                              var tasks =
                                              snapshot.data!.docs[0]["Tasks"];
@@ -823,14 +840,13 @@ class _homeScreenState extends State<homeScreen> {
                                                 onPressed: () {
                                                   var tasks = snapshot
                                                       .data!.docs[0]["Tasks"];
+                                                  deletedTasks.add(snapshot.data!.docs[0]["Tasks"][snapshot.data!.docs[0]["Count"] - 1 - index]);
                                                   var checker = snapshot
                                                       .data!.docs[0]["Checker"];
-                                                  tasks.remove(snapshot.data!
-                                                      .docs[0]["Tasks"][snapshot
-                                                          .data!
-                                                          .docs[0]["Count"] -
-                                                      1 -
-                                                      index]);
+                                                  deletedChecker.add(snapshot.data!.docs[0]["Checker"][snapshot.data!.docs[0]["Count"] - 1 - index]);
+                                                  deletedIndex.add(snapshot.data!.docs[0]["Count"] - 1 - index);
+                                                  tasks.remove(snapshot.data!.docs[0]["Tasks"][snapshot.data!.docs[0]["Count"] - 1 - index]);
+
                                                   checker.remove(snapshot.data!
                                                           .docs[0]["Checker"][
                                                       snapshot.data!.docs[0]
@@ -883,7 +899,52 @@ class _homeScreenState extends State<homeScreen> {
                                                                       .docs[0]
                                                                   ["Count"] -
                                                               1,
+                                                        }).whenComplete(() => {
+                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+
+                                                  content:const Text("Tasks Deleted"),
+                                                  duration: const Duration(milliseconds: 1500),
+                                                  elevation: 10,
+                                                  action: SnackBarAction(
+                                                  onPressed: (){
+                                                    print(snapshot
+                                                        .data!.docs[0]["Tasks"]);
+                                                  var newTasks = snapshot
+                                                      .data!.docs[0]["Tasks"];
+                                                  var newChecker =  snapshot
+                                                      .data!.docs[0]["Checker"];
+                                                    FirebaseFirestore
+                                                        .instance
+                                                        .collection(
+                                                        "User Tasks")
+                                                        .doc(
+                                                        "$userName||${auth.currentUser!.uid}")
+                                                        .collection(
+                                                        "Categories")
+                                                        .doc(idCat).update(
+                                                        {
+                                                          "Tasks":snapshot
+                                                              .data!.docs[0]["Tasks"],
+                                                          "Checker":snapshot
+                                                              .data!.docs[0]["Checker"],
+                                                          "Count":snapshot
+                                                              .data!.docs[0]["Count"],
+
                                                         });
+                                                  // print(newTasks);
+                                                  // newTasks.insert(deletedIndex[deletedTasks.length-1],deletedTasks[deletedTasks.length-1]);
+                                                  // newChecker.insert(deletedIndex[deletedTasks.length-1],deletedChecker[deletedTasks.length-1]);
+                                                  // deletedChecker.removeAt(deletedChecker.length-1);
+                                                  // deletedTasks.removeAt(deletedTasks.length-1);
+                                                  // deletedIndex.removeAt(deletedIndex.length-1);
+                                                  // print(newTasks);
+
+                                                  },
+                                                  label: "Undo",
+                                                  ),
+                                                  )),
+                                                  });
+
                                                 },
                                                 icon: const Icon(Icons.delete),
                                                 color: Colors.red[400],
