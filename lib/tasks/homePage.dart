@@ -585,7 +585,7 @@ class _homeScreenState extends State<homeScreen> {
                                                 height: MediaQuery.of(context)
                                                         .size
                                                         .width /
-                                                    8.1,
+                                                    8.8,
                                               ),
                                               Center(
                                                 child: ProgressBar(
@@ -677,8 +677,8 @@ class _homeScreenState extends State<homeScreen> {
                                           onDismissed: (value) {
                                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
 
-                                              content: Text("Tasks Deleted"),
-                                            duration: Duration(milliseconds: 1500),
+                                              content: const Text("Tasks Deleted"),
+                                            duration: const Duration(milliseconds: 1500),
                                               elevation: 10,
                                               action: SnackBarAction(
                                                 onPressed: (){
@@ -907,12 +907,6 @@ class _homeScreenState extends State<homeScreen> {
                                                   elevation: 10,
                                                   action: SnackBarAction(
                                                   onPressed: (){
-                                                    print(snapshot
-                                                        .data!.docs[0]["Tasks"]);
-                                                  var newTasks = snapshot
-                                                      .data!.docs[0]["Tasks"];
-                                                  var newChecker =  snapshot
-                                                      .data!.docs[0]["Checker"];
                                                     FirebaseFirestore
                                                         .instance
                                                         .collection(

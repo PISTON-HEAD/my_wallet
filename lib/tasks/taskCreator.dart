@@ -89,6 +89,15 @@ class _taskCreationState extends State<taskCreation> {
         title: const Text(""),
         elevation: 0,
         backgroundColor: backColor(),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: IconButton(icon: const Icon(Icons.save_sharp,color: Colors.black54,size: 20),
+            onPressed: (){
+              uploadTask();
+            },
+        ),
+          ),]
       ),
       backgroundColor: backColor(),
       body: SingleChildScrollView(
@@ -115,7 +124,7 @@ class _taskCreationState extends State<taskCreation> {
                 height: 10,
               ),
               Container(
-                width: MediaQuery.of(context).size.width / 2.5,
+                width: MediaQuery.of(context).size.width / 2.2,
                 height: MediaQuery.of(context).size.width / 7.5,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
