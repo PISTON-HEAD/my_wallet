@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:my_wallet/tasks/taskCreator.dart';
+import 'package:my_wallet/wallet/walletInfo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_progress_indicators/simple_progress_indicators.dart';
 import 'package:transition/transition.dart';
@@ -253,7 +254,7 @@ class _homeScreenState extends State<homeScreen> {
         ),
       ),
       child: activateWallet
-          ? const Scaffold()
+          ? const myWallet()
           : Scaffold(
               backgroundColor: foreColor,
               appBar: AppBar(
@@ -540,7 +541,6 @@ class _homeScreenState extends State<homeScreen> {
                                                 }));
                                           },
                                           onPressed: () {
-                                            print(snapshot.data!.docs.length);
                                             setState(() {
                                               idCat = snapshot.data
                                                       ?.docs[count - 1 - index]
@@ -682,7 +682,27 @@ class _homeScreenState extends State<homeScreen> {
                                               elevation: 10,
                                               action: SnackBarAction(
                                                 onPressed: (){
-
+                                                  FirebaseFirestore
+                                                      .instance
+                                                      .collection(
+                                                      "User Tasks")
+                                                      .doc(
+                                                      "$userName||${auth.currentUser!.uid}")
+                                                      .collection(
+                                                      "Categories")
+                                                      .doc(idCat).update(
+                                                      {
+                                                        "Tasks":snapshot
+                                                            .data!.docs[0]["Tasks"],
+                                                        "Checker":snapshot
+                                                            .data!.docs[0]["Checker"],
+                                                        "Count":snapshot
+                                                            .data!.docs[0]["Count"],
+                                                        "Completed Tasks": snapshot
+                                                            .data!
+                                                            .docs[0][
+                                                        "Completed Tasks"],
+                                                      });
                                                 },
                                                 label: "Undo",
                                               ),
@@ -881,7 +901,48 @@ class _homeScreenState extends State<homeScreen> {
                                                                       .docs[0][
                                                                   "Completed Tasks"] -
                                                               1
-                                                        })
+                                                        }).whenComplete(() => {
+                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+
+                                                      content:const Text("Tasks Deleted"),
+                                                      duration: const Duration(milliseconds: 1500),
+                                                      elevation: 10,
+                                                      action: SnackBarAction(
+                                                        onPressed: (){
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                              "User Tasks")
+                                                              .doc(
+                                                              "$userName||${auth.currentUser!.uid}")
+                                                              .collection(
+                                                              "Categories")
+                                                              .doc(idCat).update(
+                                                              {
+                                                                "Tasks":snapshot
+                                                                    .data!.docs[0]["Tasks"],
+                                                                "Checker":snapshot
+                                                                    .data!.docs[0]["Checker"],
+                                                                "Count":snapshot
+                                                                    .data!.docs[0]["Count"],
+                                                                "Completed Tasks": snapshot
+                                                                    .data!
+                                                                    .docs[0][
+                                                                "Completed Tasks"],
+                                                              });
+                                                          // print(newTasks);
+                                                          // newTasks.insert(deletedIndex[deletedTasks.length-1],deletedTasks[deletedTasks.length-1]);
+                                                          // newChecker.insert(deletedIndex[deletedTasks.length-1],deletedChecker[deletedTasks.length-1]);
+                                                          // deletedChecker.removeAt(deletedChecker.length-1);
+                                                          // deletedTasks.removeAt(deletedTasks.length-1);
+                                                          // deletedIndex.removeAt(deletedIndex.length-1);
+                                                          // print(newTasks);
+
+                                                        },
+                                                        label: "Undo",
+                                                      ),
+                                                    )),
+                                                  })
                                                       : FirebaseFirestore
                                                           .instance
                                                           .collection(

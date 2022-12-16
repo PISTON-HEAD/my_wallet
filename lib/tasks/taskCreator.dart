@@ -41,7 +41,6 @@ class _taskCreationState extends State<taskCreation> {
   var checker = [];
   var totalCount = 0;
   var category = "";
-
   keeper() {
     FirebaseFirestore.instance
         .collection("User Tasks")
@@ -94,7 +93,7 @@ class _taskCreationState extends State<taskCreation> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: IconButton(icon: const Icon(Icons.save_sharp,color: Colors.black54,size: 20),
             onPressed: (){
-              uploadTask();
+              Navigator.of(context).pop();
             },
         ),
           ),]
