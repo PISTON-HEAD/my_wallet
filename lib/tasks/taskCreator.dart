@@ -19,9 +19,18 @@ class taskCreation extends StatefulWidget {
 class _taskCreationState extends State<taskCreation> {
   TextEditingController controller = TextEditingController();
   FirebaseAuth auth = FirebaseAuth.instance;
+  ScrollController taskScroller = ScrollController();
+  void scrollUp() {
+    taskScroller.animateTo(
+      taskScroller.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 1700),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
 
   var taskId;
-
+  var taskAdded = false;
+  var newTaskList = [];
   var snapshot;
 
   _taskCreationState(this.taskId, this.snapshot);
@@ -64,10 +73,12 @@ class _taskCreationState extends State<taskCreation> {
   }
 
   uploadTask() {
-    if (controller.text.isNotEmpty) {
-      tasks.add(controller.text);
-      checker.add(false);
-      totalCount += 1;
+    if (controller.text.isNotEmpty || taskAdded == true) {
+      if(controller.text.isNotEmpty){
+        tasks.add(controller.text);
+        checker.add(false);
+      }
+      totalCount = tasks.length;
       FirebaseFirestore.instance
           .collection("User Tasks")
           .doc("${auth.currentUser!.displayName}||${auth.currentUser!.uid}")
@@ -83,28 +94,46 @@ class _taskCreationState extends State<taskCreation> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(child: Scaffold(
       appBar: AppBar(
-        title: const Text(""),
-        elevation: 0,
-        backgroundColor: backColor(),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: IconButton(icon: const Icon(Icons.save_sharp,color: Colors.black54,size: 20),
-            onPressed: (){
-              Navigator.of(context).pop();
-            },
-        ),
-          ),]
+          title: const Text(""),
+          elevation: 0,
+          automaticallyImplyLeading: true,
+          backgroundColor: backColor(),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: IconButton(icon: const Icon(Icons.save_sharp,color: Colors.black54,size: 20),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),]
       ),
       backgroundColor: backColor(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
+               SizedBox(height: MediaQuery.of(context).size.width/1.8,
+               child: ListView.builder(
+                 controller: taskScroller,
+                 itemCount: newTaskList.length,
+                 itemBuilder: (context, index) {
+                 return  Card(
+                   margin:const EdgeInsets.symmetric(vertical: 5),
+                   elevation: 1,
+                   color: Colors.white24,
+                   borderOnForeground: true,
+                   child: Padding(
+                     padding: const EdgeInsets.all(8.0),
+                     child: Text(newTaskList[index]),
+                   ),
+                 );
+               },),
+               ),
               TextField(
                 textInputAction: TextInputAction.newline,
                 keyboardType: TextInputType.multiline,
@@ -122,52 +151,69 @@ class _taskCreationState extends State<taskCreation> {
               const SizedBox(
                 height: 10,
               ),
-              Container(
-                width: MediaQuery.of(context).size.width / 2.2,
-                height: MediaQuery.of(context).size.width / 7.5,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.transparent,
-                    border: Border.all(color: Colors.black45)),
-                child: MaterialButton(
-                  onPressed: () async {
-                    final date = await PickDate();
-                    if (date == null) return;
-                    dateTime = date;
-                    final timePick = await pickTime();
-                    if (timePick == null) return;
-                    final newDateTime = DateTime(
-                      dateTime.year,
-                      dateTime.month,
-                      dateTime.day,
-                      timePick.hour,
-                      timePick.minute,
-                    );
-                    manager.scheduleNotification(
-                        category, controller.text, newDateTime);
-                  },
-                  child: Row(
-                    children: const [
-                      Icon(
-                        Icons.date_range,
-                        color: Colors.black45,
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: (){
+                    if(controller.text!=""){
+                      scrollUp();
+                      setState(() {
+                        tasks.add(controller.text);
+                        checker.add(false);
+                        taskAdded=true;
+                        newTaskList.add(controller.text);
+                        controller.text="";
+                      });
+                    }
+                    }, icon:const Icon(Icons.radio_button_checked),color: Colors.blue,),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 2.2,
+                    height: MediaQuery.of(context).size.width / 7.5,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.transparent,
+                        border: Border.all(color: Colors.black45)),
+                    child: MaterialButton(
+                      onPressed: () async {
+                        final date = await PickDate();
+                        if (date == null) return;
+                        dateTime = date;
+                        final timePick = await pickTime();
+                        if (timePick == null) return;
+                        final newDateTime = DateTime(
+                          dateTime.year,
+                          dateTime.month,
+                          dateTime.day,
+                          timePick.hour,
+                          timePick.minute,
+                        );
+                        manager.scheduleNotification(
+                            category, controller.text, newDateTime);
+                      },
+                      child: Row(
+                        children: const [
+                          Icon(
+                            Icons.date_range,
+                            color: Colors.black45,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            "Schedule Tasks",
+                            style: TextStyle(color: Colors.black45),
+                          ),
+                        ],
                       ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        "Schedule Tasks",
-                        style: TextStyle(color: Colors.black45),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
         ),
       ),
-    );
+    ));
   }
 
   Color backColor() => const Color(0xFFF7E9E0);
