@@ -79,7 +79,7 @@ class _homeScreenState extends State<homeScreen> {
   void scrollUp() {
     sController.animateTo(
       sController.position.minScrollExtent,
-      duration: const Duration(milliseconds: 1700),
+      duration: const Duration(milliseconds: 1500),
       curve: Curves.fastOutSlowIn,
     );
   }
@@ -397,11 +397,10 @@ class _homeScreenState extends State<homeScreen> {
                                         decoration: BoxDecoration(
                                             color: drawerColor(),
                                             border: Border.all(
-                                                color: idCat==snapshot.data
-                                                ?.docs[count - 1 - index]["id"]?Colors.grey:Colors.transparent,width: 1.6),
+                                                color: idCat==snapshot.data?.docs[count - 1 - index]["id"]?Colors.grey:Colors.transparent,width: 2,),
                                             borderRadius:
                                                 BorderRadius.circular(20)),
-                                        duration: const Duration(seconds: 2),
+                                        duration: const Duration(milliseconds: 1300),
                                         child: MaterialButton(
                                           onLongPress: () {
                                             //edit the name
@@ -837,7 +836,7 @@ class _homeScreenState extends State<homeScreen> {
                                                                 Navigator.of(context).pop();
                                                               },
                                                               child: const Text(
-                                                                "Change",
+                                                                "                 Change Task                 ",
                                                                 style: TextStyle(
                                                                     color: Colors
                                                                         .white),
