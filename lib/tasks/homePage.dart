@@ -115,6 +115,7 @@ class _homeScreenState extends State<homeScreen> {
   bool activateHome = true;
 
   TextEditingController catController = TextEditingController();
+  TextEditingController editController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -776,6 +777,77 @@ class _homeScreenState extends State<homeScreen> {
                                                         FontWeight.w600,
                                                         17),
                                               ),
+                                              onTap: (){
+                                                editController.text = snapshot.data!.docs[0]["Tasks"][snapshot.data!.docs[0]["Count"] - 1-index];
+                                                var editTasksList= snapshot.data!.docs[0]["Tasks"];
+                                                showDialog(context: context, builder: (context){
+                                                  return AlertDialog(
+                                                      backgroundColor:
+                                                      Colors.black87,
+                                                      shape: const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.all(
+                                                      Radius.circular(
+                                                      20.0))),
+                                                  title: const Text(
+                                                  "Edit Task",
+                                                  style: TextStyle(
+                                                  color: Colors.white),
+                                                  ),
+                                                  elevation: 20,
+                                                  content: TextField(
+                                                  controller:editController,
+                                                  autocorrect: true,
+                                                  autofocus: true,
+                                                  style: const TextStyle(
+                                                  color:
+                                                  Colors.white70),
+                                                  decoration:
+                                                  const InputDecoration(
+                                                  hintText: "Enter task",
+                                                  labelText: "Task",
+                                                  hintStyle: TextStyle(
+                                                  color:
+                                                  Colors.white60),
+                                                  ),
+                                                  ),
+                                                    actions: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceEvenly,
+                                                        children: [
+                                                          TextButton(
+                                                              onPressed: () {
+                                                                editTasksList[snapshot.data!.docs[0]["Count"] - 1-index] = editController.text;
+                                                                if(editController.text !="" && editController.text!= snapshot.data!.docs[0]["Tasks"][snapshot.data!.docs[0]["Count"] - 1-index]){
+                                                                  FirebaseFirestore.instance
+                                                                      .collection("User Tasks")
+                                                                      .doc("$userName||${auth.currentUser!.uid}")
+                                                                      .collection("Categories")
+                                                                      .doc(idCat).update(
+                                                                      {
+                                                                        "Tasks":editTasksList,
+                                                                      });
+                                                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                                      elevation: 5,
+                                                                      duration: Duration(seconds: 1),
+                                                                      content: Text("Task Edited")));
+                                                                }
+                                                                Navigator.of(context).pop();
+                                                              },
+                                                              child: const Text(
+                                                                "Change",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white),
+                                                              )),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  );
+                                                });
+                                              },
                                               shape:
                                                   const RoundedRectangleBorder(
                                                       borderRadius:
