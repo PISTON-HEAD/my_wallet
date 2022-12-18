@@ -255,8 +255,7 @@ class _homeScreenState extends State<homeScreen> {
         ),
       ),
       child: activateWallet
-          ? const myWallet()
-          : Scaffold(
+          ? const myWallet() : Scaffold(
               backgroundColor: foreColor,
               appBar: AppBar(
                 backgroundColor: foreColor,
