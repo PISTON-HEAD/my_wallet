@@ -554,7 +554,7 @@ class _homeScreenState extends State<homeScreen> {
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(20.0))),
                                           padding: const EdgeInsets.only(
-                                              left: 15, right: 15, top: 15),
+                                              left: 15, right: 15, top: 10),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
