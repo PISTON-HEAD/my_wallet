@@ -26,7 +26,7 @@ class _myWalletState extends State<myWallet> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("CURRENT BALANCE",style: TextStyle(color: Colors.white70,fontWeight: FontWeight.w500)),
+                const Text("CURRENT BALANCE",style: TextStyle(color: Colors.white70,fontWeight: FontWeight.w500)),
                 SizedBox(height: 10,),
                 Text("42500",style: TextStyle(color: Colors.white,fontSize: 30,fontWeight: FontWeight.w600),),
                 SizedBox(height: 7,),
