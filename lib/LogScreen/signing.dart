@@ -2,28 +2,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:lottie/lottie.dart';
 import 'package:my_wallet/fire_auth/authenticator.dart';
-
-import '../notification/manager.dart';
 import '../tasks/homePage.dart';
 
 // ignore: camel_case_types
 class signingIn extends StatefulWidget {
-  final bool checker;
-  const signingIn({Key? key, required this.checker}) : super(key: key);
+
+  const signingIn({Key? key}) : super(key: key);
 
   @override
   // ignore: no_logic_in_create_state
-  State<signingIn> createState() => _signingInState(checker);
+  State<signingIn> createState() => _signingInState();
 }
 
 // ignore: camel_case_types
 class _signingInState extends State<signingIn> {
-  bool checker;
-  _signingInState(this.checker);
 
+  bool checker = false;
   final formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -54,8 +50,8 @@ class _signingInState extends State<signingIn> {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => homeScreen(
-                                  userName: nameController.text.toString(),
+                            builder: (context) =>const requestSender(
+
                                 ))),
                   }
                 else
@@ -99,8 +95,8 @@ class _signingInState extends State<signingIn> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => homeScreen(
-                        userName: auth.currentUser!.displayName.toString(),
+                  builder: (context) => const requestSender(
+                       // userName: auth.currentUser!.displayName.toString(),
                       )));
         } else {
           setState(() {
@@ -126,7 +122,7 @@ class _signingInState extends State<signingIn> {
         body: screenLoader
             ? Center(
                 child: LottieBuilder.asset(
-                  "assets/wallet_signIn.json",
+                  "assets/server.json",
                   repeat: false,
                   animate: true,
                 ),
@@ -140,7 +136,7 @@ class _signingInState extends State<signingIn> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          LottieBuilder.asset("assets/wallet_signIn.json"),
+                          LottieBuilder.asset("assets/server.json"),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -286,7 +282,23 @@ class _signingInState extends State<signingIn> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         TextButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              if(emailController.text == ""){
+                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                  content: Text('Enter a valid email'),
+                                                  duration: Duration(milliseconds: 1500),
+                                                ),);
+                                              }else{
+
+                                                auth.sendPasswordResetEmail(email: emailController.text);
+                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                  content: Text('A email attached with a password reset link has been send'),
+                                                  duration: Duration(milliseconds: 1500),
+                                                ),);
+                                                emailController.text = "";
+                                              }
+
+                                            },
                                             child: const Text(
                                               "Forgot Password ?",
                                               style: TextStyle(
@@ -331,33 +343,33 @@ class _signingInState extends State<signingIn> {
                               const SizedBox(
                                 height: 10,
                               ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 1,
-                                height: MediaQuery.of(context).size.width / 7.5,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color.fromRGBO(32, 34, 68, 1),
-                                        Color.fromRGBO(32, 34, 68, 1)
-                                      ],
-                                    )),
-                                child: MaterialButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        checker = !checker;
-                                      });
-                                    },
-                                    elevation: 5,
-                                    child: Center(
-                                        child: Text(
-                                      checker ? "Login" : "Register",
-                                      style: const TextStyle(
-                                          color: Colors.white70,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w600),
-                                    ))),
-                              ),
+                              // Container(
+                              //   width: MediaQuery.of(context).size.width / 1,
+                              //   height: MediaQuery.of(context).size.width / 7.5,
+                              //   decoration: BoxDecoration(
+                              //       borderRadius: BorderRadius.circular(20),
+                              //       gradient: const LinearGradient(
+                              //         colors: [
+                              //           Color.fromRGBO(32, 34, 68, 1),
+                              //           Color.fromRGBO(32, 34, 68, 1)
+                              //         ],
+                              //       )),
+                              //   child: MaterialButton(
+                              //       onPressed: () {
+                              //         setState(() {
+                              //           checker = !checker;
+                              //         });
+                              //       },
+                              //       elevation: 5,
+                              //       child: Center(
+                              //           child: Text(
+                              //         checker ? "Login" : "Register",
+                              //         style: const TextStyle(
+                              //             color: Colors.white70,
+                              //             fontSize: 20,
+                              //             fontWeight: FontWeight.w600),
+                              //       ))),
+                              // ),
                             ],
                           ),
                         ],
