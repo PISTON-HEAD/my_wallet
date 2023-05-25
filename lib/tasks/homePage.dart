@@ -11,7 +11,7 @@ class requestSender extends StatefulWidget {
 
 class _requestSenderState extends State<requestSender> {
 
-  final String serverUrl = 'http://192.168.1.54:8090'; // Replace with your server URL
+  final String serverUrl = 'http://192.168.56.1:8090'; // Replace with your server URL
 
   Future<void> sendHttpRequest() async {
     final url = Uri.parse('$serverUrl/Philips/IBE/HealthCheck?IP=MSI,DELL'); // Replace with your desired endpoint
@@ -49,7 +49,7 @@ class _requestSenderState extends State<requestSender> {
               ],
             ),
               const SizedBox(height: 15,),
-              buildButton(context,"Control Service",Color.fromRGBO(51,55,66,1),"assets/check.png"),
+              buildButton(context,"Control Service",Color.fromRGBO(51,55,66,1),"assets/software.png"),
             ],
           )
         )
@@ -68,7 +68,9 @@ class _requestSenderState extends State<requestSender> {
                     color:color
                 ),
                 child: MaterialButton(
-                  onPressed: (){},
+                  onPressed: (){
+                    sendHttpRequest();
+                  },
                   child: Column(
                     children: [
                       Text(name,
